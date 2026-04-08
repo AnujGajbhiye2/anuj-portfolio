@@ -36,18 +36,27 @@ export function useTypingEffect(
         setIsTyping(true);
 
         timerRef.current = window.setInterval(() => {
-          // Capture index NOW — before any async state update reads it
           const i = indexRef.current;
 
           if (i >= text.length) {
-            clearInterval(timerRef.current!);
+            if (timerRef.current !== null) {
+              window.clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
+
             setIsTyping(false);
             setIsDone(true);
+
             if (loop) {
               indexRef.current = 0;
               setDisplayText("");
-              setIsTyping(true);
+              setIsDone(false);
+
+              timeoutRef.current = window.setTimeout(() => {
+                setIsTyping(true);
+              }, delay);
             }
+
             return;
           }
 
@@ -59,10 +68,17 @@ export function useTypingEffect(
 
     return () => {
       window.clearTimeout(resetId);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
 
+      if (timeoutRef.current !== null) {
+        window.clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
+      if (timerRef.current !== null) {
+        window.clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
   }, [text, speed, delay, loop]);
 
   return {

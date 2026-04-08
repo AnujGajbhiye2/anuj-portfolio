@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 import type { TimelineEventType } from '../../types';
+import { IconEducation, IconTimelineProject, IconTimelineWork } from '../shared/icons';
 
 // TS note: This is the compound component pattern — Timeline is the container,
 // TimelineItem is the building block. Consumers compose them like:
@@ -10,10 +11,10 @@ import type { TimelineEventType } from '../../types';
 // The parent controls layout; the child controls its own content.
 
 // Color per event type — Record ensures all branches are handled
-const typeStyles: Record<TimelineEventType, { dot: string; label: string; text: string }> = {
-  work:      { dot: 'bg-primary-400',   label: 'work',      text: 'text-primary-400' },
-  education: { dot: 'bg-primary-300',   label: 'education', text: 'text-primary-300' },
-  project:   { dot: 'bg-yellow-400/80', label: 'project',   text: 'text-yellow-400' },
+const typeStyles: Record<TimelineEventType, { dot: string; label: string; text: string; icon: ReactNode }> = {
+  work:      { dot: 'bg-primary-400',   label: 'work',      text: 'text-primary-400', icon: <IconTimelineWork className="h-3.5 w-3.5" /> },
+  education: { dot: 'bg-primary-300',   label: 'education', text: 'text-primary-300', icon: <IconEducation className="h-3.5 w-3.5" /> },
+  project:   { dot: 'bg-yellow-400/80', label: 'project',   text: 'text-yellow-400', icon: <IconTimelineProject className="h-3.5 w-3.5" /> },
 };
 
 // =============================================================================
@@ -72,7 +73,10 @@ export function TimelineItem({
       <div className="flex-1 min-w-0 space-y-1">
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
           <span className="font-mono text-xs text-text-dim">{year}</span>
-          <span className={cn('font-mono text-xs', style.text)}>[{style.label}]</span>
+          <span className={cn('inline-flex items-center gap-1.5 font-mono text-xs', style.text)}>
+            {style.icon}
+            <span>[{style.label}]</span>
+          </span>
         </div>
         <h3 className="font-mono font-semibold text-sm text-text-primary leading-snug">
           {title}

@@ -1,5 +1,11 @@
 import { cn } from '../../lib/cn';
 import type { Skill, SkillCategory } from '../../types';
+import {
+  IconSkillFramework,
+  IconSkillLanguage,
+  IconSkillPlatform,
+  IconSkillTool,
+} from '../shared/icons';
 
 // TS note: Object.groupBy is available in ES2024+ / modern browsers.
 // It returns Record<string, Skill[] | undefined> — the | undefined is because
@@ -13,6 +19,13 @@ const categoryLabel: Record<SkillCategory, string> = {
   tool:      'tools',
   platform:  'platforms & runtimes',
 };
+
+const categoryIcon = {
+  language: IconSkillLanguage,
+  framework: IconSkillFramework,
+  tool: IconSkillTool,
+  platform: IconSkillPlatform,
+} as const;
 
 // Renders [████░░░░░░] — filled blocks up to proficiency, empty after
 function AsciiBar({ value, max = 5 }: { value: number; max?: number }) {
@@ -47,8 +60,12 @@ export function SkillsSection({ skills, className }: SkillsSectionProps) {
 
         return (
           <div key={cat}>
-            <p className="text-text-dim text-xs font-mono mb-3">
-              $ ls ./{categoryLabel[cat]}
+            <p className="mb-3 inline-flex items-center gap-2 text-text-dim text-xs font-mono">
+              {(() => {
+                const Icon = categoryIcon[cat];
+                return <Icon className="h-3.5 w-3.5 text-primary-400" />;
+              })()}
+              <span>$ ls ./{categoryLabel[cat]}</span>
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
               {catSkills.map((skill) => (

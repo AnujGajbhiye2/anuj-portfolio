@@ -8,8 +8,8 @@ export const projects: Project[] = [
     id: 'anuj-portfolio',
     title: 'Terminal Portfolio',
     description:
-      'This site — a terminal-aesthetic developer portfolio built with React 19, TypeScript, and Tailwind CSS. Features a theme engine with 4 palettes, keyboard navigation, typing animations, and a compound component system.',
-    tags: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'Zustand'],
+      'Terminal-first portfolio and frontend playground built with React 19 and TypeScript. Designed to showcase typed UI architecture, theme switching, keyboard-aware navigation, content-driven routing, and a reusable component system without dropping the shell aesthetic.',
+    tags: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'Zustand', 'Design Systems'],
     githubUrl: 'https://github.com/anujgajbhiye/anuj-portfolio',
     liveUrl: undefined,
     status: 'in-progress',
@@ -18,7 +18,7 @@ export const projects: Project[] = [
     id: 'cosmoview',
     title: 'CosmoView',
     description:
-      'Full-stack NASA exploration platform that transforms multiple NASA public APIs into a mission-control themed app. Features APOD archive browsing, asteroid analytics, Earth imagery, NASA image library with infinite pagination, and an AI-powered Explorer Copilot. React 19 frontend on Vercel, Express backend on Render.',
+      'Full-stack NASA exploration platform that turns multiple public APIs into a mission-control style product. Built rich search, pagination, analytics views, and data-heavy UI states with React, TypeScript, TanStack Query, and Express across a split frontend/backend deployment.',
     tags: ['React', 'TypeScript', 'TanStack Query', 'Express', 'Tailwind CSS', 'Vite'],
     githubUrl: 'https://github.com/AnujGajbhiye2/CosmoView',
     liveUrl: 'https://cosmo-view.vercel.app',
@@ -28,8 +28,8 @@ export const projects: Project[] = [
     id: 'yahoo-aol',
     title: 'Yahoo / AOL — Ad Platform',
     description:
-      'Frontend engineering on the Yahoo & AOL advertising platform. Built high-traffic product surfaces, contributed to shared design systems, and shipped features used by millions of users.',
-    tags: ['React', 'JavaScript', 'CSS', 'Design Systems'],
+      'Frontend engineering across Yahoo and AOL consumer experiences, including high-traffic modules, experimentation rollouts, analytics instrumentation, and design-system-aligned UI shipped to audiences at consumer scale.',
+    tags: ['React', 'JavaScript', 'CSS', 'Design Systems', 'Next.js'],
     githubUrl: undefined,
     liveUrl: undefined,
     status: 'completed',

@@ -14,7 +14,7 @@ type ThemeStore = {
 export const useThemeStore = create<ThemeStore>()(
     persist(
         (set) => ({
-            palette: "cyan",
+            palette: "violet",
             font: "jetbrains",
             setPalette: (palette) => {
                 set({ palette });

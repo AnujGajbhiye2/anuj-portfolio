@@ -12,13 +12,14 @@ const GLOBAL_SHORTCUTS: Record<string, string> = {
   a: '/about',
   b: '/blog',
   c: '/contact',
+  l: '/lab',
 };
 
 const ROUTE_HINTS: Record<string, KeyboardHint[]> = {
   '/': [
     { keys: ['↑', '↓'], label: 'Navigate' },
     { keys: ['Enter'], label: 'Select' },
-    { keys: ['h', 'p', 'a', 'b', 'c'], label: 'Jump' },
+    { keys: ['h', 'p', 'a', 'b', 'c', 'l'], label: 'Jump' },
   ],
   '/projects': [
     { keys: ['Esc'], label: 'Back' },
@@ -39,6 +40,11 @@ const ROUTE_HINTS: Record<string, KeyboardHint[]> = {
     { keys: ['Esc'], label: 'Back' },
     { keys: ['↑', '↓'], label: 'Browse posts' },
     { keys: ['Enter'], label: 'Open' },
+  ],
+  '/lab': [
+    { keys: ['Esc'], label: 'Back' },
+    { keys: ['Scroll'], label: 'Explore' },
+    { keys: ['h'], label: 'Home' },
   ],
   '/admin': [
     { keys: ['Esc'], label: 'Back' },
@@ -127,7 +133,7 @@ const Terminal = ({ className }: { className?: string }) => {
       <div className="terminal-body">
         {showConnectionLine && <ConnectionLine />}
         <PageTransition visible={isTransitioning} pathname={location.pathname} />
-        <main className={cn("terminal-main", "flex-1 py-4 pb-8 md:pb-24 lg:py-8")}>
+        <main className={cn("terminal-main", "flex-1 py-4 pb-8 md:pb-24 lg:py-8 lg:pb-20")}>
           <div className="max-w-5xl mx-auto px-6 lg:px-12">
             <Outlet />
           </div>

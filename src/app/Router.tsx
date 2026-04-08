@@ -10,6 +10,7 @@ import NotFoundPage from "../pages/NotFound";
 import AdminPage from "../pages/AdminPage";
 import AdminLoginPage from "../pages/AdminLoginPage";
 import ProtectedRoute from "../features/auth/components/ProtectedRoute";
+import LabPage from "../pages/LabPage";
 
 export const router = createBrowserRouter([
     {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
             {
                 path: '/contact',
                 element: <ContactPage/>
+            },
+            {
+                path: '/lab',
+                element: <LabPage/>
             },
             {
                 path: '/admin/login',

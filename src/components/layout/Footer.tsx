@@ -1,5 +1,6 @@
 import { cn } from "../../lib/cn";
 import Kbd from "../ui/Kbd";
+import { IconHelp } from "../shared/icons";
 
 export type KeyboardHint = {
   keys: string[];
@@ -37,6 +38,10 @@ const Footer = ({ hints = DEFAULT_HINTS, className }: { hints?: KeyboardHint[] |
       className
     )}>
       <div className="flex items-center gap-6">
+        <span className="inline-flex items-center gap-2 text-xs text-text-dim">
+          <IconHelp className="h-3.5 w-3.5 text-primary-400" />
+          <span>shell hints</span>
+        </span>
         {hints.map((hint) => (
           <KeyboardHintItem key={`${hint.label}-${hint.keys.join('-')}`} hint={hint} />
         ))}

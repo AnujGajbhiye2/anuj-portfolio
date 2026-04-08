@@ -5,6 +5,7 @@ import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { cn } from '../lib/cn';
 import { projects } from '../data/projects';
+import { IconExperience, IconProjects, IconTag } from '../components/shared/icons';
 import {
   initialState,
   projectsReducer,
@@ -26,9 +27,44 @@ export default function ProjectsPage() {
     <div className="space-y-8">
       <PageHeader title="projects" />
 
+      <section className="grid gap-3 md:grid-cols-3">
+        <div className="rounded-sm border border-surface bg-background-secondary/70 p-4">
+          <div className="inline-flex items-center gap-2 text-xs font-mono text-text-dim">
+            <IconProjects className="h-3.5 w-3.5 text-primary-400" />
+            <span>project set</span>
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+            A mix of shipped personal work and representative product engineering experience.
+          </p>
+        </div>
+
+        <div className="rounded-sm border border-surface bg-background-secondary/70 p-4">
+          <div className="inline-flex items-center gap-2 text-xs font-mono text-text-dim">
+            <IconExperience className="h-3.5 w-3.5 text-primary-400" />
+            <span>selection logic</span>
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+            Prioritizes frontend architecture, user-facing product quality, and scale-relevant work over quantity.
+          </p>
+        </div>
+
+        <div className="rounded-sm border border-surface bg-background-secondary/70 p-4">
+          <div className="inline-flex items-center gap-2 text-xs font-mono text-text-dim">
+            <IconTag className="h-3.5 w-3.5 text-primary-400" />
+            <span>tag filters</span>
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+            Filter by stack to inspect React, TypeScript, data-heavy UI work, and design-system adjacent experience.
+          </p>
+        </div>
+      </section>
+
       {/* Tag filter bar */}
       <div className="space-y-3">
-        <p className="text-text-dim text-xs font-mono">$ filter --tags</p>
+        <p className="inline-flex items-center gap-2 text-text-dim text-xs font-mono">
+          <IconTag className="h-3.5 w-3.5 text-primary-400" />
+          <span>$ filter --tags</span>
+        </p>
         <div className="flex flex-wrap gap-2 items-center">
           {allTags.map((tag) => {
             const isActive = state.selectedTags.includes(tag);

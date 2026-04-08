@@ -6,7 +6,7 @@ import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { ThemeContext } from "./theme-context";
 
 const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [palette, setPalette] = useLocalStorage<PaletteName>("theme-palette","cyan");
+  const [palette, setPalette] = useLocalStorage<PaletteName>("theme-palette","violet");
   const [font, setFont] = useLocalStorage<FontName>("theme-font","jetbrains");
 
   useEffect(() => {

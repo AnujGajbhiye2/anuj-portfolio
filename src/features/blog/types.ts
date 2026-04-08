@@ -18,6 +18,9 @@ export interface BlogMeta {
   date: string;
   summary: string;
   tags: string[];
+  coverImage: string;
+  coverAlt: string;
+  readingTime: string;
 }
 
 export interface BlogPost extends BlogMeta {

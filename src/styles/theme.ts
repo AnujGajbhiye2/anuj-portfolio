@@ -266,7 +266,7 @@ export const fonts: Record<FontName, FontStack> = {
 // DEFAULTS
 // =============================================================================
 
-export const DEFAULT_PALETTE: PaletteName = 'cyan';
+export const DEFAULT_PALETTE: PaletteName = 'violet';
 export const DEFAULT_FONT: FontName = 'jetbrains';
 
 // =============================================================================

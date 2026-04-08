@@ -1,18 +1,19 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { contactSchema, type ContactFormData } from '../lib/validation'
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { contactSchema, type ContactFormData } from '../lib/validation';
 
-import Card, { CardHeader, CardContent, CardFooter } from '../components/ui/Card'
-import { Button } from '../components/ui/Button'
-import { Input } from '../components/ui/Input'
-import { Badge } from '../components/ui/Badge'
-import { Kbd } from '../components/ui/Kbd'
+import Card, { CardHeader, CardContent, CardFooter } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Badge } from '../components/ui/Badge';
+import { Kbd } from '../components/ui/Kbd';
+import { IconCode, IconCommand, IconContact, IconLab } from '../components/shared/icons';
 
 // =============================================================================
 // KITCHEN SINK
 // =============================================================================
 
-const KitchenSink = () => {
+export const KitchenSinkSections = () => {
   const {
     register,
     handleSubmit,
@@ -20,22 +21,34 @@ const KitchenSink = () => {
     reset,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
-  })
+  });
 
   const onSubmit = (data: ContactFormData) => {
-    alert(JSON.stringify(data, null, 2))
-    reset()
-  }
+    alert(JSON.stringify(data, null, 2));
+    reset();
+  };
 
   return (
-    <div className="min-h-screen bg-background-primary p-8 font-mono text-text-primary">
-      <h1 className="text-3xl font-bold mb-8">Kitchen Sink</h1>
+    <div className="space-y-12 font-mono text-text-primary">
+      <div className="rounded-sm border border-surface bg-background-secondary/70 p-4">
+        <div className="inline-flex items-center gap-2 text-xs text-text-dim">
+          <IconLab className="h-3.5 w-3.5 text-primary-400" />
+          <span>$ cat lab/overview.txt</span>
+        </div>
+        <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+          This route collects the UI primitives and interaction patterns that power the portfolio: cards, badges,
+          inputs, keyboard hints, and validation flows.
+        </p>
+      </div>
 
       {/* ================================================================= */}
       {/* CARD VARIANTS                                                     */}
       {/* ================================================================= */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4 text-text-secondary">Card Variants</h2>
+        <h2 className="mb-4 inline-flex items-center gap-2 text-xl font-semibold text-text-secondary">
+          <IconCode className="h-5 w-5 text-primary-400" />
+          <span>Card Variants</span>
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
             <CardHeader>
@@ -91,7 +104,10 @@ const KitchenSink = () => {
       {/* BUTTONS                                                           */}
       {/* ================================================================= */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4 text-text-secondary">Buttons</h2>
+        <h2 className="mb-4 inline-flex items-center gap-2 text-xl font-semibold text-text-secondary">
+          <IconCode className="h-5 w-5 text-primary-400" />
+          <span>Buttons</span>
+        </h2>
         <Card>
           <CardContent>
             <div className="flex flex-wrap gap-4 items-center">
@@ -110,7 +126,10 @@ const KitchenSink = () => {
       {/* BADGES                                                            */}
       {/* ================================================================= */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4 text-text-secondary">Badges</h2>
+        <h2 className="mb-4 inline-flex items-center gap-2 text-xl font-semibold text-text-secondary">
+          <IconCode className="h-5 w-5 text-primary-400" />
+          <span>Badges</span>
+        </h2>
         <Card>
           <CardContent>
             <div className="flex flex-wrap gap-3 items-center">
@@ -129,7 +148,10 @@ const KitchenSink = () => {
       {/* KBD                                                               */}
       {/* ================================================================= */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4 text-text-secondary">Keyboard Shortcuts</h2>
+        <h2 className="mb-4 inline-flex items-center gap-2 text-xl font-semibold text-text-secondary">
+          <IconCommand className="h-5 w-5 text-primary-400" />
+          <span>Keyboard Shortcuts</span>
+        </h2>
         <Card>
           <CardContent>
             <div className="flex flex-wrap gap-4 items-center text-text-secondary text-sm">
@@ -145,7 +167,10 @@ const KitchenSink = () => {
       {/* INPUT                                                             */}
       {/* ================================================================= */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4 text-text-secondary">Inputs</h2>
+        <h2 className="mb-4 inline-flex items-center gap-2 text-xl font-semibold text-text-secondary">
+          <IconContact className="h-5 w-5 text-primary-400" />
+          <span>Inputs</span>
+        </h2>
         <Card>
           <CardContent>
             <div className="flex flex-col gap-4 max-w-md">
@@ -161,7 +186,10 @@ const KitchenSink = () => {
       {/* RHF FORM                                                          */}
       {/* ================================================================= */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4 text-text-secondary">Contact Form (React Hook Form + Zod)</h2>
+        <h2 className="mb-4 inline-flex items-center gap-2 text-xl font-semibold text-text-secondary">
+          <IconContact className="h-5 w-5 text-primary-400" />
+          <span>Contact Form (React Hook Form + Zod)</span>
+        </h2>
         <Card className="max-w-lg">
           <form onSubmit={handleSubmit(onSubmit)}>
             <CardHeader>
@@ -186,6 +214,7 @@ const KitchenSink = () => {
                     type="email"
                     placeholder="you@example.com"
                     error={errors.email?.message}
+                    leftElement={<IconContact className="h-4 w-4" />}
                     {...register('email')}
                   />
                 </div>
@@ -195,6 +224,7 @@ const KitchenSink = () => {
                     id="message"
                     placeholder="At least 10 characters..."
                     error={errors.message?.message}
+                    leftElement={<IconContact className="h-4 w-4" />}
                     {...register('message')}
                   />
                 </div>
@@ -212,7 +242,16 @@ const KitchenSink = () => {
         </Card>
       </section>
     </div>
-  )
-}
+  );
+};
 
-export default KitchenSink
+const KitchenSink = () => {
+  return (
+    <div className="min-h-screen bg-background-primary p-8 font-mono text-text-primary">
+      <h1 className="mb-8 text-3xl font-bold">Kitchen Sink</h1>
+      <KitchenSinkSections />
+    </div>
+  );
+};
+
+export default KitchenSink;

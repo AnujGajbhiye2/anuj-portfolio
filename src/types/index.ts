@@ -39,6 +39,12 @@ export interface Skill {
   proficiency: 1 | 2 | 3 | 4 | 5; // 1 = beginner, 5 = expert
 }
 
+export interface ProfileFact {
+  id: string;
+  label: string;
+  value: string;
+}
+
 // ContactFormData is derived via z.infer from the Zod schema in validation.ts.
 // Re-exported here so consumers can import from one place.
 export type { ContactFormData } from '../lib/validation';

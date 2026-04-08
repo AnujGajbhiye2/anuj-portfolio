@@ -2,6 +2,7 @@ import useTheme  from '../hooks/useTheme';
 import { palettes, fonts } from '../../../styles/theme';
 import type { PaletteName, FontName } from '../types';
 import { cn } from '../../../lib/cn';
+import { IconFont, IconPalette } from '../../../components/shared/icons';
 
 type SelectorProps = {
   label: string;
@@ -47,6 +48,12 @@ export function ThemeSwitcher({ className }: { className?: string }) {
     label: value.name,
   }));
 
+  const cycleOption = (options: { value: string; label: string }[], currentValue: string) => {
+    const currentIndex = options.findIndex((option) => option.value === currentValue);
+    const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % options.length : 0;
+    return options[nextIndex]?.value ?? currentValue;
+  };
+
   return (
     <div
       className={cn(
@@ -54,19 +61,51 @@ export function ThemeSwitcher({ className }: { className?: string }) {
         className
       )}
     >
-      <span className="hidden lg:inline text-[11px] text-primary-400">$ prefs</span>
-      <Selector
-        label="theme"
-        value={palette}
-        onChange={(value) => setPalette(value as PaletteName)}
-        options={paletteOptions}
-      />
-      <Selector
-        label="font"
-        value={font}
-        onChange={(value) => setFont(value as FontName)}
-        options={fontOptions}
-      />
+      <div className="flex items-center gap-2 sm:hidden">
+        <button
+          type="button"
+          aria-label={`Switch theme. Current theme: ${palettes[palette].name}`}
+          title={`Theme: ${palettes[palette].name}`}
+          onClick={() => setPalette(cycleOption(paletteOptions, palette) as PaletteName)}
+          className={cn(
+            'inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm border border-surface',
+            'bg-background-primary text-text-muted transition-colors duration-150',
+            'hover:border-surface-hover hover:text-text-primary'
+          )}
+        >
+          <IconPalette className="h-4 w-4 text-primary-400" />
+        </button>
+
+        <button
+          type="button"
+          aria-label={`Switch font. Current font: ${fonts[font].name}`}
+          title={`Font: ${fonts[font].name}`}
+          onClick={() => setFont(cycleOption(fontOptions, font) as FontName)}
+          className={cn(
+            'inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm border border-surface',
+            'bg-background-primary text-text-muted transition-colors duration-150',
+            'hover:border-surface-hover hover:text-text-primary'
+          )}
+        >
+          <IconFont className="h-4 w-4 text-primary-400" />
+        </button>
+      </div>
+
+      <div className="hidden sm:flex sm:items-center sm:gap-2">
+        <span className="hidden lg:inline text-[11px] text-primary-400">$ prefs</span>
+        <Selector
+          label="theme"
+          value={palette}
+          onChange={(value) => setPalette(value as PaletteName)}
+          options={paletteOptions}
+        />
+        <Selector
+          label="font"
+          value={font}
+          onChange={(value) => setFont(value as FontName)}
+          options={fontOptions}
+        />
+      </div>
     </div>
   );
 }

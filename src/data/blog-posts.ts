@@ -8,6 +8,9 @@ const posts: BlogPost[] = [
     summary:
       "What I kept, what I cut, and why the terminal metaphor works best when it supports clarity instead of novelty.",
     tags: ["portfolio", "design", "react"],
+    coverImage: "https://picsum.photos/id/180/1200/720",
+    coverAlt: "Monochrome workstation desk with terminal-style setup",
+    readingTime: "4 min read",
     content: [
       {
         type: "paragraph",
@@ -36,6 +39,9 @@ const posts: BlogPost[] = [
     summary:
       "A small portfolio app is a good place to practice state decisions that stay local until they earn the right to become global.",
     tags: ["react", "state", "typescript"],
+    coverImage: "https://picsum.photos/id/48/1200/720",
+    coverAlt: "Clean keyboard and notebook setup representing structured engineering work",
+    readingTime: "3 min read",
     content: [
       {
         type: "paragraph",
@@ -61,6 +67,9 @@ const posts: BlogPost[] = [
     summary:
       "After Yahoo and AOL, the habits I value most are still the unglamorous ones: readability, consistency, and thinking through edge cases before they become bugs.",
     tags: ["career", "frontend", "engineering"],
+    coverImage: "https://picsum.photos/id/1048/1200/720",
+    coverAlt: "City lights and laptop screen suggesting product work at scale",
+    readingTime: "5 min read",
     content: [
       {
         type: "paragraph",
