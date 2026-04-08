@@ -7,9 +7,9 @@ export interface CardProps extends ComponentPropsWithRef<'div'> {
   variant?: CardVariant;
 }
 
-export interface CardHeaderProps extends ComponentPropsWithRef<'div'> {}
-export interface CardContentProps extends ComponentPropsWithRef<'div'> {}
-export interface CardFooterProps extends ComponentPropsWithRef<'div'> {}
+export type CardHeaderProps = ComponentPropsWithRef<'div'>;
+export type CardContentProps = ComponentPropsWithRef<'div'>;
+export type CardFooterProps = ComponentPropsWithRef<'div'>;
 
 const variantStyles: Record<CardVariant, string> = {
   default: 'border-surface bg-background-secondary',

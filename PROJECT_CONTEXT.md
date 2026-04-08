@@ -229,6 +229,139 @@ Global keyboard shortcuts (in Terminal.tsx):
 
 ---
 
+### Phase 7 — Portfolio Refresh & Governance (APPROVED, NOT STARTED)
+
+#### Summary
+- Refresh the site around three goals:
+  - make the homepage feel substantial and credible
+  - update the content to reflect the resume
+  - make navigation visible from every route
+- Add a public `/lab` route for site internals and component demos
+- Use `react-icons` selectively
+- Standardize pointer affordance across interactive UI
+
+#### Terminal-First Guardrail
+- Upcoming UI changes must preserve the terminal-shell visual language
+- Navigation, icons, denser content, and new route surfaces should still feel like terminal affordances
+- Do **not** drift into a generic SaaS dashboard, card-grid portfolio template, or conventional marketing-site look
+- Keep the shell/CLI metaphor intact in layout, copy, and interaction patterns
+
+#### Approval Workflow (MANDATORY)
+- Before changing any section or route content/UI, present the proposed section changes first
+- Do **not** edit that section until explicit approval is given
+- Approvals are section-scoped, not global
+- Approval buckets:
+  - `home`
+  - `about`
+  - `projects`
+  - `blog`
+  - `contact`
+  - `lab`
+  - `global navigation / header / footer`
+- `PROJECT_CONTEXT.md` is the standing reference for both roadmap and approval process
+
+#### Planned Work
+
+##### 7.1 — Homepage Redesign
+- Replace the sparse home layout with a hero plus credibility section
+- Replace the current tagline with a professional product-focused line based on the resume
+- Keep the ASCII identity, but use the space for:
+  - quick facts: Dublin, 5+ years, Yahoo/AOL, UCD MSc, Stamp 4
+  - featured stack / credibility strip
+  - clearer route cards for Projects, About, Blog, Contact, and Lab
+  - external links for GitHub, LinkedIn, email, and resume-style profile presence
+
+##### 7.2 — Resume-Driven Content Update
+- Update `about` content to match the resume:
+  - stronger summary
+  - Yahoo/AOL experience depth
+  - ValueLabs migration/testing work
+  - UCD education
+  - stronger skills/tooling coverage
+- Add an experience-focused surface instead of overloading the current short bio
+- Keep the projects page portfolio-focused, but refine descriptions to match the resume tone and impact
+- Add contact/profile shortcuts that reflect resume links and work authorization
+
+##### 7.3 — Navigation Overhaul
+- Introduce persistent header navigation on every route
+- Keep keyboard shortcuts as a secondary affordance
+- Make navigation discoverable via visible nav plus a compact shortcuts/help treatment
+- Add `/lab` as a public route and include it in header navigation
+- Keep `/admin` out of the public primary nav unless requested later
+
+##### 7.4 — Lab Route
+- Add a public `/lab` route built around site internals
+- Use existing KitchenSink and test/demo surfaces as the base
+- Reorganize them into a coherent lab page that explains:
+  - UI primitives
+  - forms / validation
+  - keyboard navigation
+  - theme system
+  - in-progress experiments
+- Rename the route/surface from kitchen sink to lab in user-facing UI
+
+##### 7.5 — Icons
+- Add `react-icons` and use it selectively, not decoratively
+- Packs:
+  - `react-icons/ri` for nav, metadata, route cards, project actions, lab sections
+  - `react-icons/hi2` for utility/form/system icons
+  - `react-icons/si` only for brand and tech logos
+- Apply icons in:
+  - header nav items
+  - homepage quick facts and route cards
+  - about summary cards and timeline type markers
+  - project action buttons and filter label
+  - contact shortcuts and field adornments
+  - blog list/detail metadata
+  - lab section headings
+- Do **not**:
+  - add icons inside the ASCII art
+  - replace `Kbd` tokens with icons
+  - add per-skill-row icons
+
+##### 7.6 — Pointer Affordance
+- Ensure all clickable buttons, links, interactive cards, icon buttons, and tag/filter controls visibly use `cursor-pointer`
+- Audit shared primitives first so the fix is inherited broadly rather than patched page-by-page
+
+#### Public Interfaces / Contracts
+- Routing:
+  - add `/lab` as a new public route
+  - add it to persistent header nav and homepage route cards
+- Content/data:
+  - extend typed data sources instead of hardcoding resume facts directly into page components
+  - support quick facts / highlight metrics
+  - support richer experience entries
+  - support profile/contact links
+- Icons:
+  - introduce a small icon mapping layer for primary routes so header nav and homepage route cards stay consistent
+
+#### Status Checklist
+- `[approved][not started]` homepage redesign
+- `[approved][not started]` resume-content refresh
+- `[approved][not started]` persistent header navigation
+- `[approved][not started]` `/lab` route
+- `[approved][not started]` icon pass
+- `[approved][not started]` pointer-affordance audit
+
+#### Test Plan
+- Run `npm run lint`
+- Run `npm run build`
+- Verify persistent header nav appears on all public routes and current-page indication is clear
+- Verify homepage no longer feels sparse on desktop and mobile, and the new tagline reflects the professional tone
+- Verify about/experience content matches resume facts: role history, dates, tech emphasis, education, work authorization, and testing/tooling experience
+- Verify `/lab` is reachable from header and homepage, and its sections render the reused demo content cleanly
+- Verify icon usage improves scanning without clutter in the no-go areas
+- Verify all clickable UI shows pointer affordance
+
+#### Assumptions
+- The resume is the source of truth for professional summary, skills emphasis, experience framing, and education
+- The refresh adds an experience-focused surface in addition to updating existing pages
+- `/lab` is public and positioned as a site-internals page, not a hidden dev-only playground
+- Public primary navigation includes Home, Projects, About, Blog, Contact, and Lab
+- `react-icons` is acceptable with restrained usage
+
+---
+
 ## Data Reference
 
 ### projects.ts entries

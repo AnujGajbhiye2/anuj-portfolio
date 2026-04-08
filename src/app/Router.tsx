@@ -7,6 +7,9 @@ import BlogPage from "../pages/BlogPage";
 import ContactPage from "../pages/ContactPage";
 import BlogPostPage from "../pages/BlogPostPage";
 import NotFoundPage from "../pages/NotFound";
+import AdminPage from "../pages/AdminPage";
+import AdminLoginPage from "../pages/AdminLoginPage";
+import ProtectedRoute from "../features/auth/components/ProtectedRoute";
 
 export const router = createBrowserRouter([
     {
@@ -35,6 +38,18 @@ export const router = createBrowserRouter([
             {
                 path: '/contact',
                 element: <ContactPage/>
+            },
+            {
+                path: '/admin/login',
+                element: <AdminLoginPage/>
+            },
+            {
+                path: '/admin',
+                element: (
+                    <ProtectedRoute>
+                        <AdminPage/>
+                    </ProtectedRoute>
+                )
             },
             {
                 path: '*',

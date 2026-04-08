@@ -1,5 +1,6 @@
 import { cn } from '../../lib/cn';
 import { useLocation } from 'react-router-dom';
+import { ThemeSwitcher } from '../../features/theme/components/ThemeSwitcher';
 
 // Traffic light dot component
 function TrafficLightDot({ color }: { color: 'red' | 'yellow' | 'green' }) {
@@ -22,8 +23,9 @@ function TrafficLightDot({ color }: { color: 'red' | 'yellow' | 'green' }) {
 }
 
 const Header = () => {
-    const location = useLocation();
-    const pageName = location.pathname === '/' ? 'home' : location.pathname.split('/')[1];
+  const location = useLocation();
+  const pageName = location.pathname === '/' ? 'home' : location.pathname.split('/')[1];
+
   return (
     <header className="flex items-center gap-3 px-4 py-2 border-b border-surface bg-background-secondary">
       {/* Traffic Lights */}
@@ -34,16 +36,15 @@ const Header = () => {
       </div>
 
       {/* Title (centered) */}
-      <div className="flex-1 text-center">
-        <span className="text-text-dim text-sm">
+      <div className="min-w-0 flex-1 text-center">
+        <span className="truncate text-text-dim text-sm">
           anuj — {pageName} — 120×41
         </span>
       </div>
 
-      {/* Spacer to balance the layout */}
-      <div className="w-[52px]" />
+      <ThemeSwitcher className="ml-auto" />
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

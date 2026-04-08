@@ -1,14 +1,13 @@
 
 import { RouterProvider } from "react-router-dom";
 import { router } from "./Router";
-import ThemeProvider from "../features/theme/context/ThemeContext";
+import Providers from "./Providers";
 
 const App = () => {
-  
   return (
-    <ThemeProvider>
+    <Providers>
       <RouterProvider router={router} />
-    </ThemeProvider>
+    </Providers>
   );
 };
 

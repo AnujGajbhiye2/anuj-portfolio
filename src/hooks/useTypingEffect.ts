@@ -21,41 +21,44 @@ export function useTypingEffect(
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isDone, setIsDone] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timerRef = useRef<number | null>(null);
+  const timeoutRef = useRef<number | null>(null);
   const indexRef = useRef(0);
 
   useEffect(() => {
-    setDisplayText("");
-    setIsTyping(false);
-    setIsDone(false);
     indexRef.current = 0;
+    const resetId = window.setTimeout(() => {
+      setDisplayText("");
+      setIsTyping(false);
+      setIsDone(false);
 
-    timeoutRef.current = setTimeout(() => {
-      setIsTyping(true);
+      timeoutRef.current = window.setTimeout(() => {
+        setIsTyping(true);
 
-      timerRef.current = setInterval(() => {
-        // Capture index NOW — before any async state update reads it
-        const i = indexRef.current;
+        timerRef.current = window.setInterval(() => {
+          // Capture index NOW — before any async state update reads it
+          const i = indexRef.current;
 
-        if (i >= text.length) {
-          clearInterval(timerRef.current!);
-          setIsTyping(false);
-          setIsDone(true);
-          if (loop) {
-            indexRef.current = 0;
-            setDisplayText("");
-            setIsTyping(true);
+          if (i >= text.length) {
+            clearInterval(timerRef.current!);
+            setIsTyping(false);
+            setIsDone(true);
+            if (loop) {
+              indexRef.current = 0;
+              setDisplayText("");
+              setIsTyping(true);
+            }
+            return;
           }
-          return;
-        }
 
-        setDisplayText((prev) => prev + text[i]);
-        indexRef.current = i + 1;
-      }, speed);
-    }, delay);
+          setDisplayText((prev) => prev + text[i]);
+          indexRef.current = i + 1;
+        }, speed);
+      }, delay);
+    }, 0);
 
     return () => {
+      window.clearTimeout(resetId);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       if (timerRef.current) clearInterval(timerRef.current);
     };

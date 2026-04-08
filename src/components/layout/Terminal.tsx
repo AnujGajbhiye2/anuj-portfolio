@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import ConnectionLine from "./ConnectionLine";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useNavigation } from "react-router-dom";
 import Header from "./Header";
-import Footer from "./Footer";
+import Footer, { type KeyboardHint } from "./Footer";
 import { cn } from "../../lib/cn";
+import PageTransition from "../shared/PageTransition";
 
 const GLOBAL_SHORTCUTS: Record<string, string> = {
   h: '/',
@@ -11,6 +12,42 @@ const GLOBAL_SHORTCUTS: Record<string, string> = {
   a: '/about',
   b: '/blog',
   c: '/contact',
+};
+
+const ROUTE_HINTS: Record<string, KeyboardHint[]> = {
+  '/': [
+    { keys: ['↑', '↓'], label: 'Navigate' },
+    { keys: ['Enter'], label: 'Select' },
+    { keys: ['h', 'p', 'a', 'b', 'c'], label: 'Jump' },
+  ],
+  '/projects': [
+    { keys: ['Esc'], label: 'Back' },
+    { keys: ['h'], label: 'Home' },
+    { keys: ['Click'], label: 'Tags filter' },
+  ],
+  '/about': [
+    { keys: ['Esc'], label: 'Back' },
+    { keys: ['h'], label: 'Home' },
+    { keys: ['Scroll'], label: 'Explore' },
+  ],
+  '/contact': [
+    { keys: ['Esc'], label: 'Back' },
+    { keys: ['Tab'], label: 'Next field' },
+    { keys: ['Enter'], label: 'Submit' },
+  ],
+  '/blog': [
+    { keys: ['Esc'], label: 'Back' },
+    { keys: ['↑', '↓'], label: 'Browse posts' },
+    { keys: ['Enter'], label: 'Open' },
+  ],
+  '/admin': [
+    { keys: ['Esc'], label: 'Back' },
+    { keys: ['Sign out'], label: 'Exit shell' },
+  ],
+  '/admin/login': [
+    { keys: ['Tab'], label: 'Move focus' },
+    { keys: ['Enter'], label: 'Enter shell' },
+  ],
 };
 
 const ScanlineOverlay = () => {
@@ -31,8 +68,18 @@ const ScanlineOverlay = () => {
 const Terminal = ({ className }: { className?: string }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const navigation = useNavigation();
+  const previousPathRef = useRef(location.pathname);
+  const [showTransition, setShowTransition] = useState(false);
 
   const showConnectionLine = location.pathname === '/';
+  const footerHints = ROUTE_HINTS[location.pathname] ?? (location.pathname.startsWith('/blog/')
+    ? [
+        { keys: ['Esc'], label: 'Back' },
+        { keys: ['b'], label: 'Blog index' },
+        { keys: ['h'], label: 'Home' },
+      ]
+    : undefined);
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
@@ -52,6 +99,21 @@ const Terminal = ({ className }: { className?: string }) => {
     return () => window.removeEventListener('keydown', handleKey);
   }, [navigate, location.pathname]);
 
+  useEffect(() => {
+    if (previousPathRef.current === location.pathname) return;
+
+    previousPathRef.current = location.pathname;
+    const frameId = window.requestAnimationFrame(() => setShowTransition(true));
+    const timeoutId = window.setTimeout(() => setShowTransition(false), 260);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [location.pathname]);
+
+  const isTransitioning = navigation.state !== 'idle' || showTransition;
+
   return (
     <div className={cn(
       'min-h-screen',
@@ -64,13 +126,14 @@ const Terminal = ({ className }: { className?: string }) => {
       <Header />
       <div className="terminal-body">
         {showConnectionLine && <ConnectionLine />}
-        <main className={cn("terminal-main", "flex-1 py-4 lg:py-8")}>
+        <PageTransition visible={isTransitioning} pathname={location.pathname} />
+        <main className={cn("terminal-main", "flex-1 py-4 pb-8 md:pb-24 lg:py-8")}>
           <div className="max-w-5xl mx-auto px-6 lg:px-12">
             <Outlet />
           </div>
         </main>
       </div>
-      <Footer />
+      <Footer hints={footerHints} className="hidden md:block" />
     </div>
   );
 };

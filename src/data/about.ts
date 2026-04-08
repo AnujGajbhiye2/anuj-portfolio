@@ -24,11 +24,11 @@ export const timeline: TimelineEvent[] = [
     type: 'work',
   },
   {
-    id: 'devmarket',
+    id: 'cosmoview',
     year: '2024',
-    title: 'DevMarket — Full-Stack Project',
+    title: 'CosmoView — Full-Stack Project',
     description:
-      'Designing and building a full-stack developer services marketplace from scratch. Express + Prisma + PostgreSQL backend, React + Radix UI frontend. Learning REST API design, auth flows, and relational data modelling.',
+      'Built a NASA exploration platform with a React frontend, TanStack Query data layer, and Express backend. Focused on API orchestration, rich UI states, and turning public space data into a polished product experience.',
     type: 'project',
   },
   {

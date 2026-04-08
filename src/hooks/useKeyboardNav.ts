@@ -90,13 +90,10 @@ export function useKeyboardNav(options: UseKeyboardNavOptions): UseKeyboardNavRe
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [enabled, handleKeyDown]);
 
-  useEffect(() => {
-    if (selectedIndex >= itemCount && itemCount > 0) {
-      setSelectedIndex(itemCount - 1);
-    }
-  }, [itemCount, selectedIndex]);
+  const clampedSelectedIndex =
+    itemCount > 0 ? Math.min(selectedIndex, itemCount - 1) : 0;
 
-  return { selectedIndex, setSelectedIndex };
+  return { selectedIndex: clampedSelectedIndex, setSelectedIndex };
 }
 
 export default useKeyboardNav;

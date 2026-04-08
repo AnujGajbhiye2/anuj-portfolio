@@ -1,11 +1,11 @@
-import { createContext, useEffect } from "react";
+import { useEffect } from "react";
+import type { ReactNode } from "react";
 import type { FontName, PaletteName, ThemeContextValue } from "../types";
 import { fonts, generateCSSVariables, palettes } from "../../../styles/theme";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
+import { ThemeContext } from "./theme-context";
 
-export const ThemeContext = createContext<ThemeContextValue | null>(null);
-
-const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [palette, setPalette] = useLocalStorage<PaletteName>("theme-palette","cyan");
   const [font, setFont] = useLocalStorage<FontName>("theme-font","jetbrains");
 
