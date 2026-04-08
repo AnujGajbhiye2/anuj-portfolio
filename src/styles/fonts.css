@@ -1,0 +1,52 @@
+/**
+ * Font Imports
+ * =============
+ * 
+ * Static imports for fonts. This ensures the default font
+ * loads immediately without waiting for JavaScript.
+ * 
+ * Note: When user switches fonts via ThemeSwitcher,
+ * the new font is loaded dynamically via loadFont() in theme.ts.
+ * 
+ * You can either:
+ * 1. Import all fonts here (bigger initial load, no flash on switch)
+ * 2. Import only default font here (smaller load, brief flash on switch)
+ * 
+ * We're doing option 2 below.
+ */
+
+/* =============================================================================
+   DEFAULT FONT: JetBrains Mono
+   ============================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+/* =============================================================================
+   OPTIONAL: Preload all fonts (uncomment if you want no flash on font switch)
+   ============================================================================= */
+
+/*
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+*/
+
+/* =============================================================================
+   FONT UTILITY CLASSES (optional)
+   ============================================================================= */
+
+.font-jetbrains {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.font-firacode {
+  font-family: 'Fira Code', monospace;
+}
+
+.font-ibmplex {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.font-spacemono {
+  font-family: 'Space Mono', monospace;
+}

@@ -1,0 +1,45 @@
+import Terminal from "../components/layout/Terminal";
+import { createBrowserRouter } from "react-router-dom";
+import HomePage from "../pages/HomePage";
+import ProjectsPage from "../pages/ProjectsPage";
+import AboutPage from "../pages/AboutPage";
+import BlogPage from "../pages/BlogPage";
+import ContactPage from "../pages/ContactPage";
+import BlogPostPage from "../pages/BlogPostPage";
+import NotFoundPage from "../pages/NotFound";
+
+export const router = createBrowserRouter([
+    {
+        element: <Terminal/>,
+        children: [
+            {
+                path: '/',
+                element: <HomePage/>
+            },
+            {
+                path: '/projects',
+                element: <ProjectsPage/>
+            },
+            {
+                path: '/about',
+                element: <AboutPage/>
+            },
+            {
+                path: '/blog',
+                element: <BlogPage/>
+            },
+            {
+                path: '/blog/:slug',
+                element: <BlogPostPage/>
+            },
+            {
+                path: '/contact',
+                element: <ContactPage/>
+            },
+            {
+                path: '*',
+                element: <NotFoundPage/>
+            }
+        ]
+    }
+])
