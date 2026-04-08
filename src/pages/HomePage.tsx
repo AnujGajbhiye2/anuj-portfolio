@@ -25,7 +25,7 @@ export default function HomePage() {
 
   const { selectedIndex } = useKeyboardNav({
     itemCount: NAV_ITEMS.length,
-    onSelect: (index) => navigate(NAV_ITEMS[index].path),
+    onSelect: (index) => navigate(NAV_ITEMS[index]?.path ?? '/'),
   });
 
   return (

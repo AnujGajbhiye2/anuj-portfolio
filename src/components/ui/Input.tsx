@@ -3,7 +3,7 @@ import { cn } from "../../lib/cn";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   /** Error message to display below the input */
-  error?: string;
+  error?: string | undefined;
   /** Element to render on the left side (e.g., search icon) */
   leftElement?: ReactNode;
   /** Element to render on the right side (e.g., show/hide password) */

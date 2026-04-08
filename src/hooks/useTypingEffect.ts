@@ -21,8 +21,8 @@ export function useTypingEffect(
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isDone, setIsDone] = useState(false);
-  const timerRef = useRef<number | null>(null);
-  const timeoutRef = useRef<number | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const indexRef = useRef(0);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect } from "react";
 import type { FontName, PaletteName, ThemeContextValue } from "../types";
 import { fonts, generateCSSVariables, palettes } from "../../../styles/theme";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";

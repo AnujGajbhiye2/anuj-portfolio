@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import ConnectionLine from "./ConnectionLine";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Header from "./Header";

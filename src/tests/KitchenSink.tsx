@@ -1,24 +1,12 @@
 import { useForm } from 'react-hook-form'
-import { z } from 'zod/v4'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { contactSchema, type ContactFormData } from '../lib/validation'
 
 import Card, { CardHeader, CardContent, CardFooter } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Badge } from '../components/ui/Badge'
 import { Kbd } from '../components/ui/Kbd'
-
-// =============================================================================
-// FORM SCHEMA
-// =============================================================================
-
-const contactSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.email('Invalid email address'),
-  message: z.string().min(10, 'Message must be at least 10 characters'),
-})
-
-type ContactForm = z.infer<typeof contactSchema>
 
 // =============================================================================
 // KITCHEN SINK
@@ -30,11 +18,11 @@ const KitchenSink = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<ContactForm>({
+  } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
   })
 
-  const onSubmit = (data: ContactForm) => {
+  const onSubmit = (data: ContactFormData) => {
     alert(JSON.stringify(data, null, 2))
     reset()
   }
