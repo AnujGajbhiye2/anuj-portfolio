@@ -10,13 +10,23 @@ const AdminLoginPage = () => {
   const { signIn, status } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [email, setEmail] = useState("admin@example.com");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const fromPath = (location.state as { from?: string } | null)?.from ?? "/admin";
 
-  const handleEnterShell = async () => {
-    await signIn({ email });
-    navigate(fromPath, { replace: true });
+  const handleLogin = async () => {
+    setError(undefined);
+    try {
+      await signIn({ password });
+      navigate(fromPath, { replace: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login failed");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleLogin();
   };
 
   return (
@@ -25,38 +35,41 @@ const AdminLoginPage = () => {
 
       <Card>
         <CardHeader className="space-y-2">
-          <p className="text-xs font-mono text-text-dim">$ auth connect --provider pending</p>
-          <h2 className="text-lg font-semibold text-primary-400">Admin shell access</h2>
-          <p className="text-sm text-text-muted">
-            This screen is a provider-agnostic placeholder. The route protection and auth contract are in
-            place, but the real backend integration is intentionally deferred.
-          </p>
+          <p className="text-xs font-mono text-text-dim">$ sudo auth --scope admin</p>
+          <h2 className="text-lg font-semibold text-primary-400">Admin access</h2>
         </CardHeader>
 
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
-            <label htmlFor="admin-email" className="block font-mono text-xs text-text-secondary">
-              admin email
+            <label htmlFor="admin-password" className="block font-mono text-xs text-text-secondary">
+              password
             </label>
             <Input
-              id="admin-email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="admin@example.com"
+              id="admin-password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="enter password"
+              autoFocus
             />
           </div>
 
-          <div className="rounded-sm border border-surface bg-background-tertiary px-3 py-3 text-sm text-text-muted">
-            Next backend step: swap the mock adapter for a real auth provider without changing route guards
-            or page-level auth calls.
-          </div>
+          {error && (
+            <p className="font-mono text-xs text-red-400">
+              &gt; error: {error}
+            </p>
+          )}
         </CardContent>
 
         <CardFooter className="justify-between gap-3">
           <p className="text-xs text-text-dim font-mono">status: {status}</p>
-          <Button size="sm" onClick={handleEnterShell} disabled={status === "loading"}>
-            {status === "loading" ? "connecting..." : "enter admin shell →"}
+          <Button
+            size="sm"
+            onClick={handleLogin}
+            disabled={status === "loading" || !password}
+          >
+            {status === "loading" ? "authenticating..." : "login →"}
           </Button>
         </CardFooter>
       </Card>

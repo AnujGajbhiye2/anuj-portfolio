@@ -5,6 +5,7 @@ import Header from "./Header";
 import Footer, { type KeyboardHint } from "./Footer";
 import { cn } from "../../lib/cn";
 import PageTransition from "../shared/PageTransition";
+import { trackPageView } from "../../lib/api";
 
 const GLOBAL_SHORTCUTS: Record<string, string> = {
   h: '/',
@@ -116,6 +117,11 @@ const Terminal = ({ className }: { className?: string }) => {
       window.cancelAnimationFrame(frameId);
       window.clearTimeout(timeoutId);
     };
+  }, [location.pathname]);
+
+  // Fire-and-forget analytics on every navigation
+  useEffect(() => {
+    trackPageView({ path: location.pathname, title: document.title });
   }, [location.pathname]);
 
   const isTransitioning = navigation.state !== 'idle' || showTransition;

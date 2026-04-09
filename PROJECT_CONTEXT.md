@@ -362,6 +362,95 @@ Global keyboard shortcuts (in Terminal.tsx):
 
 ---
 
+### Phase 8 — Backend Foundation (APPROVED, IN PROGRESS)
+
+#### Summary
+- Add a standalone `backend/` service at the repo root so it can be moved and deployed separately
+- Backend stack:
+  - Node.js
+  - Express
+  - TypeScript
+  - SQLite
+  - Prisma
+  - Winston logging
+- Initial API scope:
+  - health route
+  - contact submission route
+  - blog read routes
+  - admin-ready blog write routes
+  - analytics page-view endpoint
+
+#### Backend Guardrails
+- Backend must stay standalone from the frontend app lifecycle
+- Strong typing is required across config, models, request validation, and handlers
+- Security defaults must include Helmet and configured CORS allowlists
+- Logging must support multiple modes, with verbose development logs
+- Request context must be attached to every request via request ID + contextual logger
+- Image/file storage is explicitly deferred; blog records only store image metadata/URLs for now
+
+#### Folder Shape
+- `backend/package.json` — standalone scripts/deps
+- `backend/prisma` — Prisma schema and local SQLite database path
+- `backend/src/app` — Express app setup and route mounting
+- `backend/src/config` — env, database, logger
+- `backend/src/middleware` — request context, auth boundary, validation, error handling
+- `backend/src/modules` — `health`, `contact`, `blog`, `analytics`
+
+#### API Surface
+- `GET /api/health`
+- `POST /api/contact`
+- `GET /api/blogs`
+- `GET /api/blogs/:slug`
+- `POST /api/blogs`
+- `PATCH /api/blogs/:id`
+- `DELETE /api/blogs/:id`
+- `POST /api/analytics/page-view`
+
+#### Data Model
+- `blog_posts`
+  - slug, title, summary, content, tags, cover image metadata, reading time, published state
+- `contact_submissions`
+  - name, email, message
+- `page_views`
+  - path, referrer, title, user agent, IP metadata, request ID, timestamp
+
+#### Auth Boundary
+- Private blog write routes are behind a scaffolded admin middleware boundary
+- Full auth/session system is deferred
+- Current boundary can be backed by configured admin secret until real auth is added later
+
+#### Status Checklist
+- `[completed]` standalone backend scaffold
+- `[completed]` typed env/config setup
+- `[completed]` Winston logging + request contextualizer
+- `[completed]` Prisma schema for SQLite
+- `[completed]` health route
+- `[completed]` contact submission API
+- `[completed]` blog public read APIs
+- `[completed]` admin-ready blog write APIs
+- `[completed]` analytics page-view API
+- `[pending]` SQLite schema push against local database
+- `[pending]` frontend integration for contact/blog/analytics
+- `[pending]` image storage strategy
+
+#### Backend Commands
+```bash
+cd backend
+npm install
+npm run dev
+npm run build
+npm run lint
+npm run db:generate
+npm run db:push
+```
+
+#### Assumptions
+- Backend will be deployed separately from the frontend
+- SQLite is the source of truth for blogs, contacts, and analytics events in the current scope
+- Frontend can continue using static blog data until backend integration is ready
+
+---
+
 ## Data Reference
 
 ### projects.ts entries

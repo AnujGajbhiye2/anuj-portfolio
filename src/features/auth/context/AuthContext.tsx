@@ -1,31 +1,11 @@
 import { useEffect, useState, type ReactNode } from "react";
 import type { AuthAdapter, AuthContextValue, AuthSession, AuthCredentials } from "../types";
 import { AuthContext } from "./auth-context";
-
-const mockAdapter: AuthAdapter = {
-  async getSession() {
-    return null;
-  },
-  async signIn(credentials) {
-    await new Promise((resolve) => window.setTimeout(resolve, 400));
-
-    return {
-      user: {
-        id: "admin-shell",
-        email: credentials?.email ?? "admin@example.com",
-        role: "admin",
-        displayName: "Admin Shell",
-      },
-    };
-  },
-  async signOut() {
-    await new Promise((resolve) => window.setTimeout(resolve, 200));
-  },
-};
+import { backendAdapter } from "../adapters/backendAdapter";
 
 const AuthProvider = ({
   children,
-  adapter = mockAdapter,
+  adapter = backendAdapter,
 }: {
   children: ReactNode;
   adapter?: AuthAdapter;

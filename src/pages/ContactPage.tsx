@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { submitContact } from '../lib/api';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PageHeader from '../components/shared/PageHeader';
@@ -56,11 +57,13 @@ export default function ContactPage() {
   });
 
   const onSubmit = async (data: ContactFormData) => {
-    // Simulate async submission — swap for a real service (Formspree, etc.) later
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    console.log('[ContactPage] form submitted:', data);
-    setSubmitState('success');
-    reset();
+    try {
+      await submitContact(data);
+      setSubmitState('success');
+      reset();
+    } catch {
+      setSubmitState('error');
+    }
   };
 
   const handleReset = () => {
@@ -116,7 +119,6 @@ export default function ContactPage() {
         </div>
 
         {submitState === 'success' ? (
-        // Terminal-style success state
           <div className="space-y-3 font-mono text-sm border-l-2 border-primary-400 pl-4 lg:pt-4">
             <p className="text-text-dim">$ send --message</p>
             <p className="text-primary-400">✓ message transmitted successfully</p>
@@ -126,7 +128,17 @@ export default function ContactPage() {
               ← send another
             </Button>
           </div>
-      ) : (
+        ) : submitState === 'error' ? (
+          <div className="space-y-3 font-mono text-sm border-l-2 border-red-500 pl-4 lg:pt-4">
+            <p className="text-text-dim">$ send --message</p>
+            <p className="text-red-400">✗ transmission failed</p>
+            <p className="text-text-dim">{'>'} exit code: 1</p>
+            <p className="text-text-muted mt-4">please try again or email directly.</p>
+            <Button variant="ghost" size="sm" onClick={handleReset} className="mt-4">
+              ← try again
+            </Button>
+          </div>
+        ) : (
           <Card>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <CardHeader className="space-y-2">
