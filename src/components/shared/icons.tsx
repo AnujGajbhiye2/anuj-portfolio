@@ -5,6 +5,7 @@ import {
   RiCalendarLine,
   RiCodeSSlashLine,
   RiContactsBook3Line,
+  RiDownloadLine,
   RiEyeLine,
   RiExternalLinkLine,
   RiFolderLine,
@@ -55,6 +56,7 @@ export const IconContact = RiContactsBook3Line;
 export const IconCss = SiCss;
 export const IconDesignSystems = RiLayoutGridLine;
 export const IconDemo = RiEyeLine;
+export const IconDownload = RiDownloadLine;
 export const IconExperience = RiBriefcaseLine;
 export const IconExpress = SiExpress;
 export const IconExternalLink = RiExternalLinkLine;

@@ -8,6 +8,7 @@ import {
   IconBlog,
   IconCode,
   IconContact,
+  IconDownload,
   IconExperience,
   IconExternalLink,
   IconGithub,
@@ -51,9 +52,10 @@ const SIGNALS = [
 ] as const;
 
 const PROFILE_LINKS = [
-  { label: 'GitHub', href: 'https://github.com/AnujGajbhiye2', icon: IconGithub },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/anuj-gajbhiye/', icon: IconLinkedIn },
-  { label: 'Email', href: 'mailto:gajbhiyeanuj97@gmail.com', icon: IconContact },
+  { label: 'GitHub', href: 'https://github.com/AnujGajbhiye2', icon: IconGithub, trailingIcon: IconExternalLink, download: false },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/anuj-gajbhiye/', icon: IconLinkedIn, trailingIcon: IconExternalLink, download: false },
+  { label: 'Email', href: 'mailto:gajbhiyeanuj97@gmail.com', icon: IconContact, trailingIcon: IconExternalLink, download: false },
+  { label: 'Resume', href: '/Anuj_Gajbhiye_Resume.pdf', icon: IconAbout, trailingIcon: IconDownload, download: true },
 ] as const;
 
 
@@ -161,17 +163,19 @@ export default function HomePage() {
               <div className="flex flex-wrap gap-3">
                 {PROFILE_LINKS.map((link) => {
                   const Icon = link.icon;
+                  const TrailingIcon = link.trailingIcon;
                   return (
                     <a
                       key={link.label}
                       href={link.href}
+                      download={link.download ? 'Anuj_Gajbhiye_Resume.pdf' : undefined}
                       target={link.href.startsWith('mailto:') ? undefined : '_blank'}
                       rel={link.href.startsWith('mailto:') ? undefined : 'noreferrer'}
                       className="inline-flex cursor-pointer items-center gap-2 rounded-sm border border-surface bg-background-primary/60 px-3 py-2 text-sm text-text-muted transition-colors duration-150 hover:border-surface-hover hover:text-text-primary"
                     >
                       <Icon className="h-3.5 w-3.5 text-primary-400" />
                       <span>{link.label}</span>
-                      <IconExternalLink className="h-3.5 w-3.5 text-text-dim" />
+                      <TrailingIcon className="h-3.5 w-3.5 text-text-dim" />
                     </a>
                   );
                 })}
