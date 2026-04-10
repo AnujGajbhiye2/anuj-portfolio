@@ -78,8 +78,8 @@ export default function HomePage() {
       <section className="grid gap-6 xl:grid-cols-[260px_minmax(0,1fr)]">
         <div className="hidden xl:block shrink-0 rounded-sm border border-surface bg-background-secondary/70 p-4">
           <p className="text-xs text-text-dim">$ whoami --portrait</p>
-          <div className="relative mt-4 h-[300px] overflow-hidden">
-            <AsciiArt className="absolute left-0 top-0 origin-top-left scale-[0.26] text-primary-400/70" />
+          <div className="relative mt-4 h-[300px] overflow-hidden rounded-sm border border-surface bg-background-primary/40 p-2">
+            <AsciiArt className="absolute inset-2" src="/anuj-bg-free.png" />
           </div>
           <p className="mt-3 text-xs leading-relaxed text-text-muted">
             Shipping consumer-facing product interfaces with a bias toward clarity, resilience, and maintainable UI systems.
