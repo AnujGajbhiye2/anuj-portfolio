@@ -321,6 +321,19 @@ export function generateCSSVariables(
   `;
 }
 
+export function applyThemeCSSVariables(cssString: string): void {
+  if (typeof document === 'undefined') return;
+
+  const root = document.documentElement;
+
+  cssString.split(';').forEach((rule) => {
+    const [property, value] = rule.split(':').map((segment) => segment.trim());
+    if (property && value) {
+      root.style.setProperty(property, value);
+    }
+  });
+}
+
 // =============================================================================
 // HELPER: Apply Theme to DOM
 // =============================================================================
@@ -336,37 +349,10 @@ export function applyTheme(
   paletteName: PaletteName,
   fontName: FontName
 ): void {
-  if (typeof document === 'undefined') return;
-
   const palette = palettes[paletteName];
   const font = fonts[fontName];
-  const root = document.documentElement;
-
-  // Apply primary colors
-  Object.entries(palette.primary).forEach(([key, value]) => {
-    root.style.setProperty(`--color-primary-${key}`, value);
-  });
-
-  // Apply background colors
-  root.style.setProperty('--color-bg-primary', palette.background.primary);
-  root.style.setProperty('--color-bg-secondary', palette.background.secondary);
-  root.style.setProperty('--color-bg-tertiary', palette.background.tertiary);
-
-  // Apply surface colors
-  root.style.setProperty('--color-surface', palette.surface.DEFAULT);
-  root.style.setProperty('--color-surface-hover', palette.surface.hover);
-  root.style.setProperty('--color-surface-active', palette.surface.active);
-
-  // Apply text colors
-  root.style.setProperty('--color-text-primary', palette.text.primary);
-  root.style.setProperty('--color-text-secondary', palette.text.secondary);
-  root.style.setProperty('--color-text-muted', palette.text.muted);
-  root.style.setProperty('--color-text-dim', palette.text.dim);
-
-  // Apply fonts
-  root.style.setProperty('--font-mono', font.mono);
-  root.style.setProperty('--font-display', font.display);
-  root.style.setProperty('--font-body', font.body);
+  const cssVariables = generateCSSVariables(palette, font);
+  applyThemeCSSVariables(cssVariables);
 }
 
 // =============================================================================

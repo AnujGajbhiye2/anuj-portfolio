@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 import type { FontName, PaletteName, ThemeContextValue } from "../types";
-import { fonts, generateCSSVariables, palettes } from "../../../styles/theme";
+import { applyTheme, fonts } from "../../../styles/theme";
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { ThemeContext } from "./theme-context";
 
@@ -10,18 +10,7 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [font, setFont] = useLocalStorage<FontName>("theme-font","jetbrains");
 
   useEffect(() => {
-
-    const root = document.documentElement;
-    const css = generateCSSVariables(palettes[palette], fonts[font]);
-
-        // Parse and apply each CSS variable
-    css.split(';').forEach((rule) => {
-      const [property, value] = rule.split(':').map((s) => s.trim());
-      if (property && value) {
-        root.style.setProperty(property, value);
-      }
-    });
-
+    applyTheme(palette, font);
   },[palette, font]);
 
   useEffect(() => {

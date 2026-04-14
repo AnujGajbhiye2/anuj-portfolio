@@ -1,11 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAnalyticsSummary, getRecentViews } from '../../lib/adminApi';
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleString('en-IE', {
-    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
-  });
-}
+import { formatDateTime as formatDate } from '../../lib/format';
 
 const AnalyticsTab = () => {
   const { data: summary, isLoading: loadingSummary } = useQuery({

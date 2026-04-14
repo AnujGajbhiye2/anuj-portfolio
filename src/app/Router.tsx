@@ -1,5 +1,3 @@
-import Terminal from "../components/layout/Terminal";
-import { ScrollToTop } from "../components/layout/ScrollToTop";
 import { createBrowserRouter } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import ProjectsPage from "../pages/ProjectsPage";
@@ -12,13 +10,7 @@ import AdminPage from "../pages/AdminPage";
 import AdminLoginPage from "../pages/AdminLoginPage";
 import ProtectedRoute from "../features/auth/components/ProtectedRoute";
 import LabPage from "../pages/LabPage";
-
-const RootLayout = () => (
-    <>
-        <ScrollToTop />
-        <Terminal />
-    </>
-);
+import RootLayout from "./RootLayout";
 
 export const router = createBrowserRouter([
     {

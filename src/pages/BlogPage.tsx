@@ -5,11 +5,7 @@ import { Card, CardContent, CardHeader } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { IconBlog, IconCalendar, IconExternalLink, IconTag } from '../components/shared/icons';
 import { getBlogs, type BlogListItem } from '../lib/api';
-
-function formatDate(iso: string | null): string {
-  if (!iso) return 'draft';
-  return new Date(iso).toLocaleDateString('en-IE', { year: 'numeric', month: 'long', day: 'numeric' });
-}
+import { formatDate } from '../lib/format';
 
 const BlogCard = ({ post }: { post: BlogListItem }) => (
   <Card variant="interactive" className="overflow-hidden">

@@ -1,26 +1,144 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { Textarea } from '../../components/ui/Textarea';
+
 import {
   getAdminBlogs,
   getAdminBlog,
-  createBlog,
-  updateBlog,
   deleteBlog,
   type AdminBlogListItem,
+  createBlog,
+  updateBlog,
   type CreateBlogPayload,
 } from '../../lib/adminApi';
+import { formatDateShort as formatDate } from '../../lib/format';
+import ArticleBody from '../../components/blog/ArticleBody';
+import Input from '../../components/ui/Input';
+import { Textarea } from '../../components/ui/Textarea';
 
 function slugify(title: string): string {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-IE', { year: 'numeric', month: 'short', day: 'numeric' });
+// ─── Markdown toolbar ──────────────────────────────────────────────────────
+
+// Two shapes of action:
+//   - wrap:   surrounds current selection with `before`/`after`. If nothing is
+//             selected, inserts `before + placeholder + after` and selects the
+//             placeholder so the admin can overtype it.
+//   - block:  inserts a fixed snippet at the caret, placing the caret at the
+//             offset marked by `caret` (or end of snippet if omitted).
+type ToolbarAction =
+  | { label: string; kind: 'wrap'; before: string; after: string; placeholder: string }
+  | { label: string; kind: 'block'; snippet: string; caret?: number };
+
+const TOOLBAR_ACTIONS: ToolbarAction[] = [
+  { label: 'H2',    kind: 'block', snippet: '\n## ',         caret: 4 },
+  { label: 'H3',    kind: 'block', snippet: '\n### ',        caret: 5 },
+  { label: 'B',     kind: 'wrap',  before: '**', after: '**', placeholder: 'bold' },
+  { label: 'I',     kind: 'wrap',  before: '*',  after: '*',  placeholder: 'italic' },
+  { label: 'link',  kind: 'wrap',  before: '[',  after: '](url)', placeholder: 'text' },
+  { label: 'img',   kind: 'block', snippet: '![alt](https://...)' },
+  { label: 'code',  kind: 'wrap',  before: '\n```ts\n', after: '\n```\n', placeholder: '' },
+  { label: '`…`',   kind: 'wrap',  before: '`',  after: '`',  placeholder: 'code' },
+  { label: 'list',  kind: 'block', snippet: '\n- ', caret: 3 },
+  { label: 'quote', kind: 'block', snippet: '\n> ', caret: 3 },
+  { label: 'hr',    kind: 'block', snippet: '\n---\n' },
+];
+
+// Write text into the textarea using the browser's native input pipeline so
+// that the native undo stack is preserved. `execCommand('insertText')` is
+// deprecated in spec but is still the only cross-browser way to do this in a
+// plain <textarea> — the modern alternative (InputEvent with inputType) only
+// works on contenteditable. React's synthetic onChange picks the write up via
+// the 'input' event it fires, so form state stays in sync without us calling
+// setState manually (which would wipe undo history).
+function typeInto(el: HTMLTextAreaElement, text: string): boolean {
+  el.focus();
+  return document.execCommand('insertText', false, text);
 }
+
+interface MarkdownToolbarProps {
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
+  // Fallback path only — used if execCommand is unavailable. When execCommand
+  // succeeds, React's onChange handler already updated form state for us.
+  onChange: (value: string) => void;
+}
+
+const MarkdownToolbar = ({ textareaRef, onChange }: MarkdownToolbarProps) => {
+  const run = (action: ToolbarAction) => {
+    const el = textareaRef.current;
+    if (!el) return;
+
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const selected = el.value.slice(start, end);
+
+    if (action.kind === 'wrap') {
+      const inner = selected.length > 0 ? selected : action.placeholder;
+      const text = action.before + inner + action.after;
+
+      const ok = typeInto(el, text);
+      if (!ok) {
+        // execCommand refused (very old browser). Fall back to setState-based
+        // insert — this loses undo history but keeps the feature functional.
+        const next = el.value.slice(0, start) + text + el.value.slice(end);
+        onChange(next);
+      }
+
+      // Select the inner placeholder (or keep caret at end when wrapping real
+      // selection) so the admin can overtype immediately.
+      requestAnimationFrame(() => {
+        el.focus();
+        if (selected.length === 0) {
+          const innerStart = start + action.before.length;
+          el.setSelectionRange(innerStart, innerStart + inner.length);
+        } else {
+          const caret = start + text.length;
+          el.setSelectionRange(caret, caret);
+        }
+      });
+      return;
+    }
+
+    // block
+    const ok = typeInto(el, action.snippet);
+    if (!ok) {
+      const next = el.value.slice(0, start) + action.snippet + el.value.slice(end);
+      onChange(next);
+    }
+
+    requestAnimationFrame(() => {
+      el.focus();
+      const caret = start + (action.caret ?? action.snippet.length);
+      el.setSelectionRange(caret, caret);
+    });
+  };
+
+  return (
+    <div className="flex flex-wrap gap-1 rounded-t-sm border border-b-0 border-surface bg-background-tertiary px-2 py-1.5">
+      {TOOLBAR_ACTIONS.map((action) => (
+        <Button
+          key={action.label}
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="h-6 px-2 text-xs font-mono"
+          // Prevent the button from stealing focus before the click fires —
+          // without this, the textarea loses its selection range by the time
+          // onClick runs, and we'd insert at position 0.
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => run(action)}
+        >
+          {action.label}
+        </Button>
+      ))}
+    </div>
+  );
+};
+
+
 
 // ─── Form ──────────────────────────────────────────────────────────────────
 
@@ -33,6 +151,8 @@ interface BlogFormProps {
 const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
   const qc = useQueryClient();
   const isEdit = !!initial?.id;
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [contentTab, setContentTab] = useState<'write' | 'preview'>('write');
 
   const [form, setForm] = useState({
     title: initial?.title ?? '',
@@ -118,15 +238,51 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
         <Input value={form.summary} onChange={set('summary')} placeholder="Short description" />
       </div>
 
-      <div className="space-y-1.5">
-        <label className="block text-xs font-mono text-text-secondary">content (markdown)</label>
-        <Textarea
-          value={form.content}
-          onChange={set('content')}
-          placeholder="Write your post in markdown..."
-          rows={12}
-          required
-        />
+      <div className="space-y-0">
+        {/* Write / Preview tab row */}
+        <div className="flex items-center gap-0.5 pb-0">
+          {(['write', 'preview'] as const).map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setContentTab(tab)}
+              className={[
+                'px-3 py-1 text-xs font-mono transition-colors',
+                contentTab === tab
+                  ? 'text-primary-400 border-b border-primary-400'
+                  : 'text-text-dim hover:text-text-secondary',
+              ].join(' ')}
+            >
+              {tab}
+            </button>
+          ))}
+          <span className="ml-auto text-xs font-mono text-text-dim">markdown</span>
+        </div>
+
+        {contentTab === 'write' ? (
+          <>
+            <MarkdownToolbar
+              textareaRef={textareaRef}
+              onChange={(val) => setForm((prev) => ({ ...prev, content: val }))}
+            />
+            <Textarea
+              ref={textareaRef}
+              value={form.content}
+              onChange={set('content')}
+              placeholder="Write your post in markdown..."
+              rows={16}
+              required
+              className="rounded-t-none border-t-0"
+            />
+          </>
+        ) : (
+          <div className="min-h-80 rounded-sm border border-surface bg-background-secondary/40 p-4">
+            {form.content.trim()
+              ? <ArticleBody content={form.content} />
+              : <p className="text-xs font-mono text-text-dim">nothing to preview yet…</p>
+            }
+          </div>
+        )}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

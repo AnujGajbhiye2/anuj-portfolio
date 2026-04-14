@@ -29,13 +29,23 @@ const categoryIcon = {
 
 // Renders [████░░░░░░] — filled blocks up to proficiency, empty after
 function AsciiBar({ value, max = 5 }: { value: number; max?: number }) {
+  const percent = Math.round((value / max) * 100);
   const filled = '█'.repeat(value);
   const empty  = '░'.repeat(max - value);
   return (
-    <span className="font-mono text-xs" aria-label={`${value} of ${max}`}>
-      <span className="text-primary-400">{filled}</span>
-      <span className="text-surface">{empty}</span>
-    </span>
+    <div className="flex items-center gap-3">
+      <span
+        className="font-mono text-xs"
+        aria-label={`${value} of ${max} (${percent}%)`}
+        title={`${percent}% proficiency`}
+      >
+        <span className="text-primary-400">{filled}</span>
+        <span className="text-surface">{empty}</span>
+      </span>
+      <span className="min-w-[3ch] text-right font-mono text-xs text-text-dim">
+        {percent}%
+      </span>
+    </div>
   );
 }
 

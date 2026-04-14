@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getContacts } from '../../lib/adminApi';
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-IE', {
-    year: 'numeric', month: 'short', day: 'numeric',
-  });
-}
+import { formatDateShort as formatDate } from '../../lib/format';
 
 const ContactsTab = () => {
   const [expanded, setExpanded] = useState<number | null>(null);

@@ -5,36 +5,8 @@ import { Card, CardContent, CardHeader } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { IconBack, IconCalendar, IconTag } from '../components/shared/icons';
 import { getBlogBySlug, ApiError } from '../lib/api';
-
-function formatDate(iso: string | null): string {
-  if (!iso) return 'draft';
-  return new Date(iso).toLocaleDateString('en-IE', { year: 'numeric', month: 'long', day: 'numeric' });
-}
-
-// Render markdown content as simple paragraphs — no extra dependency needed.
-// Double newlines = paragraph breaks; blockquotes (> ...) get special styling.
-const MarkdownContent = ({ content }: { content: string }) => {
-  const blocks = content.split(/\n\n+/).filter(Boolean);
-
-  return (
-    <div className="space-y-4">
-      {blocks.map((block, i) => {
-        if (block.startsWith('> ')) {
-          return (
-            <blockquote key={i} className="border-l-2 border-primary-400 pl-4 text-sm text-text-muted italic">
-              {block.replace(/^> /, '')}
-            </blockquote>
-          );
-        }
-        return (
-          <p key={i} className="text-sm leading-7 text-text-secondary whitespace-pre-wrap">
-            {block}
-          </p>
-        );
-      })}
-    </div>
-  );
-};
+import ArticleBody from '../components/blog/ArticleBody';
+import { formatDate } from '../lib/format';
 
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -81,7 +53,8 @@ const BlogPostPage = () => {
     );
   }
 
-  const post = data!.post;
+  const post = data?.post;
+  if (!post) return null;
 
   return (
     <div className="space-y-8">
@@ -111,7 +84,7 @@ const BlogPostPage = () => {
         </CardHeader>
 
         <CardContent>
-          <MarkdownContent content={post.content} />
+          <ArticleBody content={post.content} />
         </CardContent>
       </Card>
 

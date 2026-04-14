@@ -63,7 +63,7 @@ export const timeline: TimelineEvent[] = [
   {
     id: 'yahoo-international',
     year: 'Nov 2023 – Mar 2026',
-    title: 'Frontend Engineer',
+    title: 'Software Dev Engineer',
     company: 'Yahoo International Limited',
     description:
       'Owned end-to-end development across AOL homepage, channel, and article experiences. Shipped reusable UI modules, migrated legacy stitching and page layers to Next.js-based architecture, integrated analytics instrumentation, supported experimentation rollout, and brought Playwright E2E coverage into CI/CD.',
@@ -78,14 +78,7 @@ export const timeline: TimelineEvent[] = [
       'Shipped production frontend modules for AOL.com including weather, local news, and location-based experiences. Worked on live consumer surfaces across AOL.com, AOL.co.uk, and AOL.ca while collaborating closely with engineering and design.',
     type: 'work',
   },
-  {
-    id: 'cosmoview',
-    year: '2024',
-    title: 'CosmoView — Full-Stack Project',
-    description:
-      'Built a NASA exploration platform with React, TypeScript, TanStack Query, and Express. Focused on API orchestration, search and pagination UX, and turning public space data into a polished product experience.',
-    type: 'project',
-  },
+
   {
     id: 'ucd',
     year: '2022 – 2023',
@@ -103,6 +96,14 @@ export const timeline: TimelineEvent[] = [
     description:
       'Led frontend modernization work on a finance platform, migrating legacy ColdFusion experiences to Vue.js, designing REST APIs, and introducing Jest/Cypress-based testing to improve maintainability and release confidence.',
     type: 'work',
+  },
+    {
+    id: 'cosmoview',
+    year: '2024',
+    title: 'CosmoView — Full-Stack Project',
+    description:
+      'Built a NASA exploration platform with React, TypeScript, TanStack Query, and Express. Focused on API orchestration, search and pagination UX, and turning public space data into a polished product experience.',
+    type: 'project',
   },
   {
     id: 'portfolio',
