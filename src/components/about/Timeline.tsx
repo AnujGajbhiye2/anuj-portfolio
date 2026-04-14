@@ -61,7 +61,7 @@ export function TimelineItem({
     <li className="relative flex gap-6 pb-8">
       {/* Vertical connector line — hidden on the last item */}
       {!isLast && (
-        <div className="absolute left-[7px] top-4 bottom-0 w-px bg-surface" aria-hidden="true" />
+        <div className="absolute left-1.75 top-4 bottom-0 w-px bg-surface" aria-hidden="true" />
       )}
 
       {/* Dot */}

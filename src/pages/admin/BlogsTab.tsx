@@ -6,6 +6,7 @@ import { Input } from '../../components/ui/Input';
 import { Textarea } from '../../components/ui/Textarea';
 import {
   getAdminBlogs,
+  getAdminBlog,
   createBlog,
   updateBlog,
   deleteBlog,
@@ -208,6 +209,12 @@ const BlogsTab = () => {
     queryFn: getAdminBlogs,
   });
 
+  const { data: editData, isLoading: isLoadingEdit } = useQuery({
+    queryKey: ['admin', 'blog', editing?.id],
+    queryFn: () => getAdminBlog(editing!.id),
+    enabled: !!editing?.id && mode === 'edit',
+  });
+
   const deleteMutation = useMutation({
     mutationFn: deleteBlog,
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'blogs'] }),
@@ -223,6 +230,8 @@ const BlogsTab = () => {
     setEditing(null);
   };
 
+  const fullPost = editData?.post;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -234,24 +243,29 @@ const BlogsTab = () => {
         )}
       </div>
 
-      {(mode === 'create' || mode === 'edit') && (
-        <BlogForm
-          initial={
-            editing
-              ? {
-                  id: editing.id,
-                  title: editing.title,
-                  slug: editing.slug,
-                  summary: editing.summary ?? undefined,
-                  tags: editing.tags,
-                  reading_time: editing.reading_time,
-                  published: !!editing.published,
-                }
-              : undefined
-          }
-          onSuccess={handleCloseForm}
-          onCancel={handleCloseForm}
-        />
+      {mode === 'create' && (
+        <BlogForm initial={undefined} onSuccess={handleCloseForm} onCancel={handleCloseForm} />
+      )}
+
+      {mode === 'edit' && (
+        isLoadingEdit
+          ? <p className="text-xs font-mono text-text-dim">loading post...</p>
+          : fullPost && (
+            <BlogForm
+              initial={{
+                id: fullPost.id,
+                title: fullPost.title,
+                slug: fullPost.slug,
+                summary: fullPost.summary ?? undefined,
+                content: fullPost.content,
+                tags: fullPost.tags,
+                reading_time: fullPost.reading_time,
+                published: !!fullPost.published,
+              }}
+              onSuccess={handleCloseForm}
+              onCancel={handleCloseForm}
+            />
+          )
       )}
 
       {isLoading && <p className="text-xs font-mono text-text-dim">loading...</p>}

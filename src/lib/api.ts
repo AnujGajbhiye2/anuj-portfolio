@@ -52,6 +52,7 @@ export interface BlogListItem {
 export interface BlogPost extends BlogListItem {
   content: string;
   cover_image_url: string | null;
+  published: boolean;
   updated_at: string;
 }
 

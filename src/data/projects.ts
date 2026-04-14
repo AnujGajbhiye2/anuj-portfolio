@@ -5,6 +5,26 @@ import type { Project } from '../types';
 // not just status: string). It's stricter than a plain type annotation.
 export const projects: Project[] = [
   {
+    id: 'yahoo-aol',
+    title: 'Yahoo / AOL — Consumer Platform',
+    description:
+      'Frontend engineering across Yahoo and AOL consumer experiences, including high-traffic modules, experimentation rollouts, analytics instrumentation, and design-system-aligned UI shipped to audiences at consumer scale.',
+    tags: ['React', 'Next.js', 'JavaScript', 'CSS', 'Design Systems'],
+    githubUrl: undefined,
+    liveUrl: undefined,
+    status: 'completed',
+  },
+  {
+    id: 'valuelabs-finance-platform',
+    title: 'ValueLabs — Finance Platform Modernization',
+    description:
+      'Led the migration of a legacy finance platform from ColdFusion to Vue.js, improving maintainability and user experience for 50,000+ users. Designed REST APIs to decouple frontend and backend systems and introduced Jest and Cypress automated testing to improve release confidence.',
+    tags: ['Vue.js', 'JavaScript', 'REST APIs', 'Jest', 'Cypress'],
+    githubUrl: undefined,
+    liveUrl: undefined,
+    status: 'completed',
+  },
+  {
     id: 'anuj-portfolio',
     title: 'Terminal Portfolio',
     description:
@@ -22,16 +42,6 @@ export const projects: Project[] = [
     tags: ['React', 'TypeScript', 'TanStack Query', 'Express', 'Tailwind CSS', 'Vite'],
     githubUrl: 'https://github.com/AnujGajbhiye2/CosmoView',
     liveUrl: 'https://cosmo-view.vercel.app',
-    status: 'completed',
-  },
-  {
-    id: 'yahoo-aol',
-    title: 'Yahoo / AOL — Ad Platform',
-    description:
-      'Frontend engineering across Yahoo and AOL consumer experiences, including high-traffic modules, experimentation rollouts, analytics instrumentation, and design-system-aligned UI shipped to audiences at consumer scale.',
-    tags: ['React', 'JavaScript', 'CSS', 'Design Systems', 'Next.js'],
-    githubUrl: undefined,
-    liveUrl: undefined,
     status: 'completed',
   },
 ];

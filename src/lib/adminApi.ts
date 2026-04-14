@@ -30,6 +30,9 @@ export interface UpdateBlogPayload {
 export const getAdminBlogs = (): Promise<{ posts: AdminBlogListItem[]; total: number }> =>
   apiFetch('/api/blogs/admin/all');
 
+export const getAdminBlog = (id: number): Promise<{ post: BlogPost }> =>
+  apiFetch(`/api/blogs/admin/${id}`);
+
 export const createBlog = (data: CreateBlogPayload): Promise<{ post: BlogPost }> =>
   apiFetch('/api/blogs', { method: 'POST', body: JSON.stringify(data) });
 
