@@ -79,7 +79,7 @@ export default function HomePage() {
       <section className="grid gap-6 xl:grid-cols-[260px_minmax(0,1fr)]">
         <div className="hidden xl:block shrink-0 rounded-sm border border-surface bg-background-secondary/70 p-4">
           <p className="text-xs text-text-dim">$ whoami --portrait</p>
-          <div className="relative mt-4 h-[300px] overflow-hidden rounded-sm border border-surface bg-background-primary/40 p-2">
+          <div className="relative mt-4 h-75 overflow-hidden rounded-sm border border-surface bg-background-primary/40 p-2">
             <AsciiArt className="absolute inset-2" src="/anuj-bg-free.png" />
           </div>
           <p className="mt-3 text-xs leading-relaxed text-text-muted">
@@ -107,7 +107,7 @@ export default function HomePage() {
 | (_| | | | | |_| |  | |
  \\__,_|_| |_|\\__,_| _/ |
                    |__/`}</pre>
-                  <p className="min-h-[4rem] max-w-3xl text-lg leading-relaxed text-text-secondary font-mono ">
+                  <p className="min-h-16 max-w-3xl text-lg leading-relaxed text-text-secondary font-mono ">
                     {displayedText}
                     <span
                       aria-hidden="true"
