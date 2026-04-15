@@ -7,6 +7,7 @@ import { IconBack, IconCalendar, IconTag } from '../components/shared/icons';
 import { getBlogBySlug, ApiError } from '../lib/api';
 import ArticleBody from '../components/blog/ArticleBody';
 import { formatDate } from '../lib/format';
+import { formatReadingTime } from '../lib/readingTime';
 
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -55,6 +56,7 @@ const BlogPostPage = () => {
 
   const post = data?.post;
   if (!post) return null;
+  console.log({ post });
 
   return (
     <div className="space-y-8">
@@ -65,9 +67,9 @@ const BlogPostPage = () => {
           <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-text-dim">
             <span className="inline-flex items-center gap-1.5">
               <IconCalendar className="h-3.5 w-3.5 text-primary-400" />
-              {formatDate(post.published_at)}
+              {formatDate(post.publishedAt ?? post.createdAt)}
             </span>
-            <span>{post.reading_time} min read</span>
+            <span>{formatReadingTime(post.readingTime, post.content)}</span>
           </div>
           <h2 className="text-2xl font-semibold text-primary-400">{post.title}</h2>
           <div className="flex flex-wrap gap-2">

@@ -31,3 +31,7 @@ PROJECT_CONTEXT.md
 .gitignore
 AGENTS.md
 CLAUDE.md
+.claude/*
+.claude
+.codex
+.codex/*

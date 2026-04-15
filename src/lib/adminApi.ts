@@ -2,7 +2,7 @@ import { apiFetch, type BlogPost, type BlogListItem } from './api';
 
 // ─── Blog (admin) ──────────────────────────────────────────────────────────
 
-export interface AdminBlogListItem extends Omit<BlogListItem, 'published_at'> {
+export interface AdminBlogListItem extends Omit<BlogListItem, 'published_at' | 'published'> {
   published: number;   // 0 | 1
   published_at: string | null;
   updated_at: string;

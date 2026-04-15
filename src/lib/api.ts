@@ -44,16 +44,18 @@ export interface BlogListItem {
   title: string;
   summary: string | null;
   tags: string[];
-  reading_time: number;
-  published_at: string | null;
-  created_at: string;
+  readingTime: number;
+  publishedAt: string | null;
+  createdAt: string;
+  coverImageUrl?: string | null;
+  published?: boolean;
 }
 
 export interface BlogPost extends BlogListItem {
   content: string;
-  cover_image_url: string | null;
+  coverImageUrl: string | null;
   published: boolean;
-  updated_at: string;
+  updatedAt: string;
 }
 
 export interface ContactData {

@@ -13,6 +13,7 @@ import {
   type CreateBlogPayload,
 } from '../../lib/adminApi';
 import { formatDateShort as formatDate } from '../../lib/format';
+import { estimateReadingTimeMinutes } from '../../lib/readingTime';
 import ArticleBody from '../../components/blog/ArticleBody';
 import Input from '../../components/ui/Input';
 import { Textarea } from '../../components/ui/Textarea';
@@ -159,8 +160,7 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
     slug: initial?.slug ?? '',
     summary: initial?.summary ?? '',
     content: initial?.content ?? '',
-    tags: initial?.tags?.join(', ') ?? '',
-    reading_time: String(initial?.reading_time ?? 1),
+      tags: initial?.tags?.join(', ') ?? '',
     published: initial?.published ?? false,
   });
 
@@ -194,6 +194,7 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
   });
 
   const isPending = createMutation.isPending || updateMutation.isPending;
+  const estimatedReadingTime = estimateReadingTimeMinutes(form.content);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -205,7 +206,7 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
       summary: form.summary || undefined,
       content: form.content,
       tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
-      reading_time: Number(form.reading_time) || 1,
+      reading_time: estimatedReadingTime,
       published: form.published,
     };
 
@@ -291,8 +292,8 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
           <Input value={form.tags} onChange={set('tags')} placeholder="react, typescript" />
         </div>
         <div className="space-y-1.5">
-          <label className="block text-xs font-mono text-text-secondary">reading time (min)</label>
-          <Input type="number" min="1" value={form.reading_time} onChange={set('reading_time')} />
+          <label className="block text-xs font-mono text-text-secondary">reading time</label>
+          <Input value={`${estimatedReadingTime} min read`} readOnly />
         </div>
       </div>
 
@@ -339,7 +340,7 @@ const BlogRow = ({ post, onEdit, onDelete, isDeleting }: BlogRowProps) => (
         </Badge>
       </div>
       <p className="text-xs font-mono text-text-dim">
-        /{post.slug} · {formatDate(post.created_at)}
+        /{post.slug} · {formatDate(post.createdAt)}
         {post.tags.length > 0 && ` · ${post.tags.join(', ')}`}
       </p>
     </div>
@@ -415,7 +416,7 @@ const BlogsTab = () => {
                 summary: fullPost.summary ?? undefined,
                 content: fullPost.content,
                 tags: fullPost.tags,
-                reading_time: fullPost.reading_time,
+                reading_time: fullPost.readingTime,
                 published: !!fullPost.published,
               }}
               onSuccess={handleCloseForm}

@@ -98,8 +98,10 @@ const Terminal = ({ className }: { className?: string }) => {
         return;
       }
 
-      const path = GLOBAL_SHORTCUTS[e.key];
-      if (path && path !== location.pathname) navigate(path);
+      if (!import.meta.env.DEV) {
+        const path = GLOBAL_SHORTCUTS[e.key];
+        if (path && path !== location.pathname) navigate(path);
+      }
     }
 
     window.addEventListener('keydown', handleKey);

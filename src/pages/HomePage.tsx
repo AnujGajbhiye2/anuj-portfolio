@@ -71,6 +71,7 @@ export default function HomePage() {
   const { selectedIndex } = useKeyboardNav({
     itemCount: NAV_ITEMS.length,
     onSelect: (index) => navigate(NAV_ITEMS[index]?.path ?? '/'),
+    enabled: !import.meta.env.DEV,
   });
 
   return (
