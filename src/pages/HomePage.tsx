@@ -56,6 +56,7 @@ const PROFILE_LINKS = [
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/anuj-gajbhiye/', icon: IconLinkedIn, trailingIcon: IconExternalLink, download: false },
   { label: 'Email', href: 'mailto:gajbhiyeanuj97@gmail.com', icon: IconContact, trailingIcon: IconExternalLink, download: false },
   { label: 'Resume', href: '/Anuj_Gajbhiye_Resume.pdf', icon: IconAbout, trailingIcon: IconDownload, download: true },
+  { label: 'Cover Letter', href: '/Anuj_Gajbhiye_Cover_Letter.pdf', icon: IconAbout, trailingIcon: IconDownload, download: true },
 ] as const;
 
 
