@@ -20,7 +20,7 @@ const ConnectionLine = () => {
       <span className="text-text-dim">@</span>
       <span className="text-text-muted">portfolio</span>
       <span className="text-text-dim"> ~ % </span>
-      <span className="text-text-primary">ssh anuj.dev</span>
+      <span className="text-text-primary">ssh anujgajbhiye.dev</span>
     </div>
   </div>;
 };
