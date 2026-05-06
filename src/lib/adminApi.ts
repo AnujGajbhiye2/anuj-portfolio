@@ -1,4 +1,4 @@
-import { apiFetch, type BlogPost, type BlogListItem } from './api';
+import { apiFetch, ApiError, type BlogPost, type BlogListItem } from './api';
 
 // ─── Blog (admin) ──────────────────────────────────────────────────────────
 
@@ -16,6 +16,7 @@ export interface CreateBlogPayload {
   tags?: string[] | undefined;
   reading_time?: number | undefined;
   published?: boolean | undefined;
+  cover_image_url?: string | undefined;
 }
 
 export interface UpdateBlogPayload {
@@ -25,6 +26,7 @@ export interface UpdateBlogPayload {
   tags?: string[] | undefined;
   reading_time?: number | undefined;
   published?: boolean | undefined;
+  cover_image_url?: string | undefined;
 }
 
 export const getAdminBlogs = (): Promise<{ posts: AdminBlogListItem[]; total: number }> =>
@@ -41,6 +43,30 @@ export const updateBlog = (id: number, data: UpdateBlogPayload): Promise<{ post:
 
 export const deleteBlog = (id: number): Promise<void> =>
   apiFetch(`/api/blogs/${id}`, { method: 'DELETE' });
+
+export interface UploadImageResult {
+  url: string;
+  publicId: string;
+}
+
+export async function uploadImage(file: File): Promise<UploadImageResult> {
+  const BASE_URL = import.meta.env.VITE_API_URL as string;
+  const form = new FormData();
+  form.append('image', file);
+
+  const res = await fetch(`${BASE_URL}/api/blogs/admin/upload-image`, {
+    method: 'POST',
+    credentials: 'include',
+    body: form,
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({})) as { error?: string };
+    throw new ApiError(res.status, body.error ?? `Upload failed: ${res.status}`);
+  }
+
+  return res.json() as Promise<UploadImageResult>;
+}
 
 // ─── Contacts ──────────────────────────────────────────────────────────────
 

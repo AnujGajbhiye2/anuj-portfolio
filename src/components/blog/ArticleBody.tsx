@@ -2,6 +2,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Components } from 'react-markdown';
 import CodeBlock from './CodeBlock';
+import { LazyImage } from '../ui/LazyImage';
 
 // TS note: Components is react-markdown's type for the `components` prop map.
 // Each key is an HTML element name; the value is a React component that receives
@@ -50,10 +51,10 @@ const components: Components = {
   ),
   img: ({ src, alt }) => (
     <figure className="my-6">
-      <img
-        src={src}
+      <LazyImage
+        src={src ?? ''}
         alt={alt ?? ''}
-        loading="lazy"
+        aspectRatio="16/9"
         className="w-full rounded-sm border border-surface"
       />
       {alt && (

@@ -6,6 +6,7 @@ import { Badge } from "../components/ui/Badge";
 import { IconExternalLink, IconTag } from "../components/shared/icons";
 import { getBlogs, type BlogListItem } from "../lib/api";
 import { formatReadingTime } from "../lib/readingTime";
+import { LazyImage } from "../components/ui/LazyImage";
 
 const BlogCard = ({ post }: { post: BlogListItem }) => {
   return (
@@ -19,11 +20,11 @@ const BlogCard = ({ post }: { post: BlogListItem }) => {
         >
           {post.coverImageUrl && (
             <div className="relative min-h-45 overflow-hidden border-b border-surface bg-background-secondary lg:border-b-0 lg:border-r">
-              <img
+              <LazyImage
                 src={post.coverImageUrl}
                 alt={post.title}
-                className="h-full w-full object-cover"
-                loading="lazy"
+                aspectRatio="4/3"
+                className="h-full w-full"
               />
             </div>
           )}

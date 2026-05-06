@@ -10,6 +10,7 @@ import {
   type AdminBlogListItem,
   createBlog,
   updateBlog,
+  uploadImage,
   type CreateBlogPayload,
 } from '../../lib/adminApi';
 import { formatDateShort as formatDate } from '../../lib/format';
@@ -17,6 +18,7 @@ import { estimateReadingTimeMinutes } from '../../lib/readingTime';
 import ArticleBody from '../../components/blog/ArticleBody';
 import Input from '../../components/ui/Input';
 import { Textarea } from '../../components/ui/Textarea';
+import { LazyImage } from '../../components/ui/LazyImage';
 
 function slugify(title: string): string {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -65,9 +67,11 @@ interface MarkdownToolbarProps {
   // Fallback path only — used if execCommand is unavailable. When execCommand
   // succeeds, React's onChange handler already updated form state for us.
   onChange: (value: string) => void;
+  onUploadClick: () => void;
+  isUploading: boolean;
 }
 
-const MarkdownToolbar = ({ textareaRef, onChange }: MarkdownToolbarProps) => {
+const MarkdownToolbar = ({ textareaRef, onChange, onUploadClick, isUploading }: MarkdownToolbarProps) => {
   const run = (action: ToolbarAction) => {
     const el = textareaRef.current;
     if (!el) return;
@@ -135,6 +139,17 @@ const MarkdownToolbar = ({ textareaRef, onChange }: MarkdownToolbarProps) => {
           {action.label}
         </Button>
       ))}
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        className="ml-auto h-6 px-2 text-xs font-mono text-primary-400"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={onUploadClick}
+        disabled={isUploading}
+      >
+        {isUploading ? 'uploading...' : '↑ upload'}
+      </Button>
     </div>
   );
 };
@@ -144,7 +159,7 @@ const MarkdownToolbar = ({ textareaRef, onChange }: MarkdownToolbarProps) => {
 // ─── Form ──────────────────────────────────────────────────────────────────
 
 interface BlogFormProps {
-  initial?: Partial<CreateBlogPayload & { id: number }> | undefined;
+  initial?: Partial<CreateBlogPayload & { id: number; coverImageUrl?: string | undefined }> | undefined;
   onSuccess: () => void;
   onCancel: () => void;
 }
@@ -153,6 +168,8 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
   const qc = useQueryClient();
   const isEdit = !!initial?.id;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const bodyImageInputRef = useRef<HTMLInputElement>(null);
+  const coverImageInputRef = useRef<HTMLInputElement>(null);
   const [contentTab, setContentTab] = useState<'write' | 'preview'>('write');
 
   const [form, setForm] = useState({
@@ -160,11 +177,15 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
     slug: initial?.slug ?? '',
     summary: initial?.summary ?? '',
     content: initial?.content ?? '',
-      tags: initial?.tags?.join(', ') ?? '',
+    tags: initial?.tags?.join(', ') ?? '',
     published: initial?.published ?? false,
+    coverImageUrl: initial?.coverImageUrl ?? '',
   });
 
   const [error, setError] = useState<string | undefined>(undefined);
+  const [isUploadingBody, setIsUploadingBody] = useState(false);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const [uploadError, setUploadError] = useState<string | undefined>(undefined);
 
   const set = (field: keyof typeof form) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -178,6 +199,47 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
       // auto-generate slug from title on new posts
       ...(field === 'title' && !isEdit ? { slug: slugify(e.target.value) } : {}),
     }));
+  };
+
+  const handleBodyImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingBody(true);
+    setUploadError(undefined);
+    try {
+      const { url } = await uploadImage(file);
+      const el = textareaRef.current;
+      const snippet = `![${file.name.replace(/\.[^.]+$/, '')}](${url})`;
+      if (el) {
+        const ok = typeInto(el, snippet);
+        if (!ok) {
+          setForm((prev) => ({ ...prev, content: prev.content + '\n' + snippet }));
+        }
+      } else {
+        setForm((prev) => ({ ...prev, content: prev.content + '\n' + snippet }));
+      }
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Upload failed');
+    } finally {
+      setIsUploadingBody(false);
+      if (bodyImageInputRef.current) bodyImageInputRef.current.value = '';
+    }
+  };
+
+  const handleCoverImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingCover(true);
+    setUploadError(undefined);
+    try {
+      const { url } = await uploadImage(file);
+      setForm((prev) => ({ ...prev, coverImageUrl: url }));
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Upload failed');
+    } finally {
+      setIsUploadingCover(false);
+      if (coverImageInputRef.current) coverImageInputRef.current.value = '';
+    }
   };
 
   const createMutation = useMutation({
@@ -208,6 +270,7 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
       tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
       reading_time: estimatedReadingTime,
       published: form.published,
+      cover_image_url: form.coverImageUrl || undefined,
     };
 
     if (isEdit && initial?.id) {
@@ -239,6 +302,37 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
         <Input value={form.summary} onChange={set('summary')} placeholder="Short description" />
       </div>
 
+      <div className="space-y-1.5">
+        <label className="block text-xs font-mono text-text-secondary">cover image</label>
+        <div className="flex gap-2">
+          <Input
+            value={form.coverImageUrl}
+            onChange={set('coverImageUrl')}
+            placeholder="https://res.cloudinary.com/..."
+            className="flex-1"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => coverImageInputRef.current?.click()}
+            disabled={isUploadingCover}
+          >
+            {isUploadingCover ? '...' : '↑ upload'}
+          </Button>
+        </div>
+        {form.coverImageUrl && (
+          <div className="mt-2 h-20 w-32 overflow-hidden rounded-sm border border-surface">
+            <LazyImage
+              src={form.coverImageUrl}
+              alt="cover preview"
+              aspectRatio="4/3"
+              className="h-full w-full"
+            />
+          </div>
+        )}
+      </div>
+
       <div className="space-y-0">
         {/* Write / Preview tab row */}
         <div className="flex items-center gap-0.5 pb-0">
@@ -265,6 +359,8 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
             <MarkdownToolbar
               textareaRef={textareaRef}
               onChange={(val) => setForm((prev) => ({ ...prev, content: val }))}
+              onUploadClick={() => bodyImageInputRef.current?.click()}
+              isUploading={isUploadingBody}
             />
             <Textarea
               ref={textareaRef}
@@ -307,6 +403,10 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
         <span className="text-xs font-mono text-text-secondary">published</span>
       </label>
 
+      {uploadError && (
+        <p className="text-xs font-mono text-red-400">&gt; upload error: {uploadError}</p>
+      )}
+
       {error && <p className="text-xs font-mono text-red-400">&gt; error: {error}</p>}
 
       <div className="flex gap-2 justify-end">
@@ -317,6 +417,22 @@ const BlogForm = ({ initial, onSuccess, onCancel }: BlogFormProps) => {
           {isPending ? 'saving...' : isEdit ? 'save changes →' : 'create post →'}
         </Button>
       </div>
+
+      {/* Hidden file inputs — triggered programmatically */}
+      <input
+        ref={bodyImageInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        className="hidden"
+        onChange={handleBodyImageUpload}
+      />
+      <input
+        ref={coverImageInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        className="hidden"
+        onChange={handleCoverImageUpload}
+      />
     </form>
   );
 };
@@ -418,6 +534,7 @@ const BlogsTab = () => {
                 tags: fullPost.tags,
                 reading_time: fullPost.readingTime,
                 published: !!fullPost.published,
+                coverImageUrl: fullPost.coverImageUrl ?? undefined,
               }}
               onSuccess={handleCloseForm}
               onCancel={handleCloseForm}
