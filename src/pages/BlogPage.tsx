@@ -23,7 +23,8 @@ const BlogCard = ({ post }: { post: BlogListItem }) => {
               <LazyImage
                 src={post.coverImageUrl}
                 alt={post.title}
-                aspectRatio="4/3"
+                aspectRatio="16/9"
+                objectFit="contain"
                 className="h-full w-full"
               />
             </div>

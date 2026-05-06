@@ -5,57 +5,76 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run dev        # Start dev server on localhost:3000 (auto-opens browser)
-npm run build      # TypeScript check + Vite production build (tsc -b && vite build)
-npm run lint       # ESLint across all .ts/.tsx files
-npm run preview    # Preview production build locally
+# Frontend
+npm run dev        # Dev server on localhost:3000 (auto-opens browser)
+npm run build      # tsc -b && vite build (must pass before any PR)
+npm run lint       # ESLint across all .ts/.tsx
+npm run preview    # Preview production build
+
+# Backend (run from backend/)
+cd backend && npm run dev        # Backend dev server
+cd backend && npm run build      # TypeScript compile
+cd backend && npm run lint
+cd backend && npm run db:generate  # Prisma client generation
+cd backend && npm run db:push      # Push schema to SQLite
 ```
 
-No test runner is configured yet.
+No test runner configured. `npm run build` is the correctness gate.
 
 ## Architecture
 
-Terminal-aesthetic portfolio site built with React 19 + TypeScript (strict) + Vite.
+Terminal-aesthetic portfolio. Frontend: React 19 + TypeScript strict + Vite. Backend: standalone Express + TypeScript + SQLite + Prisma in `backend/`.
+
+### Provider Stack
+
+`src/app/Providers.tsx` wraps the app in this order:
+1. `QueryClientProvider` (TanStack Query, `staleTime: 30s`, `retry: 1`)
+2. `ThemeProvider` (CSS variable injection)
+3. `AuthProvider` (JWT cookie session)
 
 ### Routing & Layout
 
-- React Router v7 with `createBrowserRouter` — routes defined in `src/app/Router.tsx`
-- All routes render inside `<Terminal/>` layout wrapper (`src/components/layout/Terminal.tsx`)
-- Layout components: Header (traffic lights), Footer (keyboard hints), ConnectionLine
+- `src/app/Router.tsx` — all routes nested under `<RootLayout>` → `<Terminal>`
+- Routes: `/`, `/projects`, `/about`, `/blog`, `/blog/:slug`, `/contact`, `/lab`, `/admin/login`, `/admin` (protected)
+- `<Terminal>` renders `<Header>`, scanline overlay, `<Outlet>`, `<Footer>`, `<ConnectionLine>`
+- Global keyboard shortcuts in `Terminal.tsx`: `h/p/a/b/c` jump to routes; disabled when focus in input/textarea
 
 ### Theme System
 
-The theme system uses CSS custom properties driven by TypeScript tokens:
+`src/styles/theme.ts` is the single source of truth — 4 palettes (`cyan`, `matrix`, `amber`, `violet`), 4 fonts. `generateCSSVariables()` → CSS string → applied to `document.documentElement`. Zustand store (`src/features/theme/store/themeStore.ts`) persists to localStorage. Tailwind classes (`text-primary`, `bg-background-primary`, etc.) map to CSS vars defined in `tailwind.config.ts`.
 
-1. `src/styles/theme.ts` is the single source of truth — defines 4 color palettes (`cyan`, `matrix`, `amber`, `violet`) and 4 font stacks (`jetbrains`, `firacode`, `ibmplex`, `spacemono`)
-2. `generateCSSVariables()` converts palette + font into CSS custom properties
-3. Zustand store (`src/features/theme/store/themeStore.ts`) manages state with `persist` middleware (localStorage)
-4. `tailwind.config.ts` maps CSS variables to Tailwind utility classes (e.g., `text-primary`, `bg-background-primary`, `text-text-muted`)
+### API Layer
 
-Theme changes: set Zustand state -> parse CSS variables -> apply to `document.documentElement`.
+`src/lib/api.ts` — public API helpers (`getBlogs`, `getBlogBySlug`, `submitContact`, `trackPageView`). Base: `apiFetch` prepends `VITE_API_URL`, sends cookies, throws `ApiError` on non-2xx.
+
+`src/lib/adminApi.ts` — admin-only CRUD for blogs, contacts, analytics, and image upload (multipart, skips `apiFetch`).
+
+### Auth
+
+Adapter pattern: `src/features/auth/adapters/backendAdapter.ts` implements `AuthAdapter` (getSession, signIn, signOut). `AuthProvider` bootstraps session on mount. `ProtectedRoute` guards `/admin`. Hook: `useAuth()` from `src/features/auth/hooks/useAuth.ts`.
 
 ### Path Aliases
 
-Configured in `vite.config.ts`: `@/` maps to `src/`, plus `@components`, `@features`, `@hooks`, `@lib`, `@pages`, `@styles`, `@types`.
+`@/` → `src/`, plus `@components`, `@features`, `@hooks`, `@lib`, `@pages`, `@styles`, `@types`.
 
 ### React Compiler
 
-Enabled via `babel-plugin-react-compiler` in Vite config. Impacts dev/build performance but enables automatic memoization.
+`babel-plugin-react-compiler` enabled in Vite — automatic memoization; avoid manual `useMemo`/`useCallback` unless profiling shows a specific issue.
 
 ## Conventions
 
 - **Named exports**, PascalCase component files
-- **`forwardRef`** on all form elements (Input, etc.)
 - **`cn()`** (`src/lib/cn.ts` — clsx + tailwind-merge) for all className merging
 - **Tailwind classes only** — no inline styles
-- **TypeScript**: prefer inference; explicit types only at function boundaries
-- Reuse existing UI components from `src/components/ui/` (Button, Input, Card, Badge, Kbd)
+- **TypeScript**: prefer inference; explicit types at function boundaries only
+- Reuse UI primitives from `src/components/ui/` (Button, Input, Card, Badge, Kbd, Textarea, LazyImage)
+- Shared Zod schemas in `src/lib/validation.ts`; typed data in `src/data/`
 
-## Current State & Roadmap
+## Current State
 
-Phases 1-3 complete (foundation, layout, theme system). Phase 4 (core pages) is next: HomePage with typing effect, ProjectsPage with tag filtering (useReducer), AboutPage, ContactPage (React Hook Form + Zod).
+All Phase 4 pages complete (Home, Projects, About, Contact). Backend Phase 8 scaffolded. See `PROJECT_CONTEXT.md` for the full phase roadmap, approval workflow for Phase 7 (visual refresh), and known tech debt.
 
----
+**Approval requirement:** Before changing any section or route content/UI, present the proposed changes first and wait for explicit per-section approval. Approval buckets: `home`, `about`, `projects`, `blog`, `contact`, `lab`, `global navigation / header / footer`.
 
 ## About the Developer
 
@@ -78,17 +97,3 @@ Phases 1-3 complete (foundation, layout, theme system). Phase 4 (core pages) is 
 3. Provide a starter shell with clear TODO comments
 4. List acceptance criteria (what it should do when done)
 5. Do NOT show the full solution first
-
-### Next Challenge: Phase 4, Step 1 — HomePage
-
-**Concept taught:** Custom hooks + useEffect + useState
-**File:** `src/pages/HomePage.tsx`
-
-Issue this problem statement to the user:
-> "Build the HomePage. It should show your name with a typing effect animation,
-> an ASCII art logo, and support keyboard shortcuts (press `h` to go home, `p` for projects, etc.).
-> Use the existing `useTypingEffect` and `useKeyboardNav` hooks.
-> Reuse the `Kbd` component to show available shortcuts."
->
-> Starter shell: provide `HomePage.tsx` with import stubs and TODO comments only.
-> Acceptance criteria: animation plays on mount, keyboard nav works, no inline styles.

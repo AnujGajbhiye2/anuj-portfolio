@@ -17,9 +17,10 @@ export interface LazyImageProps {
   className?: string;
   aspectRatio?: AspectRatio;
   sizes?: string;
+  objectFit?: 'cover' | 'contain';
 }
 
-export const LazyImage = ({ src, alt, className, aspectRatio = 'auto', sizes }: LazyImageProps) => {
+export const LazyImage = ({ src, alt, className, aspectRatio = 'auto', sizes, objectFit = 'cover' }: LazyImageProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -75,7 +76,8 @@ export const LazyImage = ({ src, alt, className, aspectRatio = 'auto', sizes }: 
           onLoad={() => setIsLoaded(true)}
           onError={() => setHasError(true)}
           className={cn(
-            'h-full w-full object-cover transition-opacity duration-300',
+            'h-full w-full transition-opacity duration-300',
+            objectFit === 'contain' ? 'object-contain' : 'object-cover',
             isLoaded ? 'opacity-100' : 'opacity-0',
           )}
         />

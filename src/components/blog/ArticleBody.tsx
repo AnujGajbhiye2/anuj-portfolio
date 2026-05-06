@@ -55,6 +55,7 @@ const components: Components = {
         src={src ?? ''}
         alt={alt ?? ''}
         aspectRatio="16/9"
+        objectFit="contain"
         className="w-full rounded-sm border border-surface"
       />
       {alt && (
