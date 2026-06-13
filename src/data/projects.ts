@@ -35,6 +35,16 @@ export const projects: Project[] = [
     status: 'in-progress',
   },
   {
+    id: 'quantdesk',
+    title: 'QuantDesk',
+    description:
+      'Self-hosted Bloomberg-style swing-trading research terminal built with Next.js 15 and TypeScript. Features a no-look-ahead backtest engine, pluggable data-provider adapters, 100+ technical indicators, signal generation, and a paper-trading book — all in a dense, keyboard-driven, monospace dashboard.',
+    tags: ['Next.js', 'TypeScript', 'SQLite', 'React', 'Tailwind CSS', 'Vitest'],
+    githubUrl: 'https://github.com/AnujGajbhiye2/quantdesk',
+    liveUrl: undefined,
+    status: 'in-progress',
+  },
+  {
     id: 'cosmoview',
     title: 'CosmoView',
     description:
